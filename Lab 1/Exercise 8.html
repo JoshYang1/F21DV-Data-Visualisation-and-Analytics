@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+
+<body>
+</body>
+
+<script>
+    var myData = ['a', 4, 1, 'b', 6, 2, 8, 9, 'z' ];
+
+    var p = d3.select("body")
+                .selectAll("span")
+                .data(myData)
+                .enter()
+                .append('p')
+                .text(function (d, i) {
+                    return d;
+                })                    
+                .style("color", function(d, i) {
+                    // https://stackoverflow.com/questions/47048416/checking-the-type-of-an-element-in-an-array-in-javascript/47048475
+                        if(typeof d === 'string') {
+                            return "blue";
+                        } else {
+                            return "green";        
+                        }
+                    });
+</script>
+
+</html>
