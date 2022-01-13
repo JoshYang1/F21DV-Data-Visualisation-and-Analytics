@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<script src='https://d3js.org/d3.v7.min.js'></script>
+<head>
+    <script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
 
 <body></body>
 
@@ -9,13 +11,13 @@
     let newspan = d3.select("body")
 
     for (let i = 1; i < 11; i++) {
-        newspan.append('div').text(i).style("color", "red")
-        if (i > 5) {
-            newspan.style("color", "green")
+        if (i <= 5) {
+            // https://www.tutorialsteacher.com/d3js/dom-manipulation-using-d3js
+            newspan.insert('div').text(i).style("color", "red")
+        } else {
+            newspan.insert('div').text(i).style("color", "green")
         }
     }
-
-    
 </script>
 
 </html>
