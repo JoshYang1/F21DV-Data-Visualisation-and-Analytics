@@ -19,21 +19,23 @@
     895,3,"Wirz, Mr. Albert",male,27,0,0,315154,8.6625,,S
     */
 
-    console.log(typeof titaniccsv);
-
-    
 
     d3.csv(titaniccsv).then(function(data) {
-        var countMrs = 0;
-        var countMr = 0;
-        data.forEach(function(d) {
-            if (d.Name.includes("Mrs.")) {
-                countMrs++
-            } else if (d.Name.includes("Mr.")) {
-                countMr++
-            }  
+        var filteredMR = data.filter(function(d){
+            return d.Name.includes("Mr.");
         });
-        console.log(countMrs);
+        var countMr = filteredMR.length;
+
+        // var countMrs = 0;
+        // var countMr = 0;
+        // data.forEach(function(d) {
+        //     if (d.Name.includes("Mrs.")) {
+        //         countMrs++
+        //     } else if (d.Name.includes("Mr.")) {
+        //         countMr++
+        //     }  
+        // });
+        // console.log(countMrs);
         console.log(countMr);
     });
     
