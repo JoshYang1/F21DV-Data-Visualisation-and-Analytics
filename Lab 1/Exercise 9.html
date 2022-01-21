@@ -21,6 +21,19 @@
 
 
     d3.csv(titaniccsv).then(function(data) {
+
+
+        const arrayN = []
+        
+        data.forEach(function(d) {
+
+
+            arrayN.push(d.Name.split(",."))
+        });
+
+        console.log(arrayN)
+
+
         var filteredMR = data.filter(function(d){
             return d.Name.includes("Mr.");
         });
