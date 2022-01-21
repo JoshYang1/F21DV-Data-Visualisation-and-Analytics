@@ -10,6 +10,7 @@
 
 <script>
 
+    // importing the csv file
     let titaniccsv = 'https://raw.githubusercontent.com/dsindy/kaggle-titanic/master/data/test.csv';
     /*
     PassengerId,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
@@ -19,37 +20,38 @@
     895,3,"Wirz, Mr. Albert",male,27,0,0,315154,8.6625,,S
     */
 
-
+    // reading the csv file
     d3.csv(titaniccsv).then(function(data) {
 
-
+        // creating two new arrays to store the counts
         const arrayN = []
+        const arrayS = []
         
+        // reading each line of the csv file
         data.forEach(function(d) {
 
-
-            arrayN.push(d.Name.split(",."))
+            // splitting the Name element, separated by a blank space
+            var title = d.Name.split(" ")
+            // adding the title of the passenger to an array which should be the element at index 1
+            arrayN.push(title[1])
+            // adding the sex of the passenger to an array
+            arrayS.push(d.Sex)
         });
 
-        console.log(arrayN)
+        // creating a function to count the number of unique values 
+        // https://www.tutorialspoint.com/counting-unique-elements-in-an-array-in-javascript
+        const countUnique = arr => {
+            // creating an empty object
+            const counts = {};
+            for (var i = 0; i < arr.length; i++) {
+                // the key of counts object is based off the array parameter provided and increment the count
+                counts[arr[i]] = 1 + (counts[arr[i]] || 0);
+            };
+            return counts;
+        };
 
-
-        var filteredMR = data.filter(function(d){
-            return d.Name.includes("Mr.");
-        });
-        var countMr = filteredMR.length;
-
-        // var countMrs = 0;
-        // var countMr = 0;
-        // data.forEach(function(d) {
-        //     if (d.Name.includes("Mrs.")) {
-        //         countMrs++
-        //     } else if (d.Name.includes("Mr.")) {
-        //         countMr++
-        //     }  
-        // });
-        // console.log(countMrs);
-        console.log(countMr);
+        console.log(countUnique(arrayN));
+        console.log(countUnique(arrayS))
     });
     
 
