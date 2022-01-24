@@ -29,20 +29,21 @@
             return d.DEATH_EVENT == 1
         })
 
-        // creating a function to count the number of unique values 
-        // https://www.tutorialspoint.com/counting-unique-elements-in-an-array-in-javascript
+        // creating a function to count the number of values for each age bracket
         const countUnique = arr => {
             // creating an empty object
             const counts = {};
-
+            // defining the keys for the object
             counts['1 - 30'] = 0
             counts['31 - 40'] = 0
             counts['41 - 60'] = 0
             counts['61 - 100'] = 0
 
+            //looping through the data to count per age bracket
             for (var i = 0; i < arr.length; i++) {
                 // the key of counts object is based off the array parameter provided and increment the count
                 if (arr[i].age <= 30) {
+                    //count is either zero or already initialised
                     counts['1 - 30'] = 1 + (counts['1 - 30'] || 0)
                 } else if (arr[i].age >= 31 && arr[i].age <= 40) {
                     counts['31 - 40'] = 1 + (counts['31 - 40'] || 0)
@@ -55,11 +56,15 @@
             return counts;
         };
 
+        // passing the filtered data into the count function
         var output = countUnique(filtered)
 
+        // creating d3 object
         var svg = d3.select("body")
 
+        // looping through each key in the object and creating a 'p' HTML element
         Object.keys(output).forEach(key => {
+            // setting the text of the element to the key and value
             svg.insert("p").text("Age Bracket: " + key + " Count :" + output[key]);
         })
     });
