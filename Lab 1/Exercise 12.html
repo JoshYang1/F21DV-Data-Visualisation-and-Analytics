@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+
+<body>
+</body>
+
+<script>
+
+    // Definining the filepath
+    let shapecsv = './Data/Exercise 12 Data.csv';
+
+    // Create SVG element
+    var svg = d3.select("body")
+                .append("svg")
+                .attr("width", 400)
+                .attr("height", 400)
+                .style("border", '1px solid green');
+
+    // Reading the CSV file
+    d3.csv(shapecsv).then(function(data) {
+
+            // Reading each line
+            data.forEach(function(d) {
+                // Switch statement for each shape 
+                switch (d.Shape) {
+                    case 'circle':
+                        // Create and append circle
+                        svg.append("circle")
+                            .attr("cx", d.Positionx)
+                            .attr("cy", d.Positiony)
+                            .attr("r", d.Radius)
+                            .attr("fill", d.Color);
+                        break;
+
+                    case 'rectangle':
+                        // Create and append rectangle element
+                        svg.append("rect")
+                            .attr("x", d.Positionx)
+                            .attr("y", d.Positiony)
+                            .attr("width", d.Width)
+                            .attr("height", d.Height)
+                            .attr("fill", d.Color);
+                        break;
+
+                    case 'ellipse':
+                        // Create and append ellipse element
+                        svg.append("ellipse")
+                            .attr("cx", d.Positionx)
+                            .attr("cy", d.Positiony)
+                            .attr("rx", d.Radiusx)
+                            .attr("ry", d.Radiusy)
+                            .attr("fill", d.Color);
+                        break;
+
+                    case 'line':
+                        // Create and append line element
+                        svg.append("line")
+                            .attr("x1", d.Positionx)
+                            .attr("x2", d.Positionx2)
+                            .attr("y1", d.Positiony)
+                            .attr("y2", d.Positiony2)
+                            .attr("stroke", d.Color);
+                        break;
+                }
+            });
+    });
+
+    </script>
+
+</html>
