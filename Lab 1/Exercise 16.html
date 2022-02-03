@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+
+<body>
+</body>
+
+<script>
+
+    const width = 500;
+    const height = 500;
+    const data = [10, 15, 20, 25, 30];
+    // Note different valid ways of specifying color
+    const colors = ['#ffffcc','red','rgb(0,255,0)','#31a354','#006837'];
+
+    const svg = d3.select("body")
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+
+    const g = svg.selectAll("g")
+                .data(data)
+                .enter()
+                .append("g")
+                .attr("transform", function(d, i) {
+                    return "translate(0,0)";
+                })
+
+    for (var j = 0; j < data.length; j++) {
+        if (data[j] % 10 == 0) {
+            console.log(data[j])
+            g.append("circle")
+                .attr("cx", function(d) {
+                    return data[j]*15;
+                })
+                .attr("cy", function(d) {
+                    return 100;
+                })
+                .attr("r", function(d) {
+                return data[j]*1.5;
+                })
+                .attr("fill", function(d, i){
+                    return colors[j];
+                })
+        } else {
+            console.log("hello" + data[j])
+            g.append("rect")
+                .attr("x", function(d) {
+                        return data[j]*14;
+                    })
+                    .attr("y", 90)
+                    .attr("width", function(d) {
+                    return data[j]*1.5;
+                    })
+                    .attr("height", function(d) {
+                    return data[j]*1.5;
+                    })
+                    .attr("fill", function(d, i){
+                        return colors[j];
+                    })
+        }
+    }
+
+    g.append("text")
+        .attr("x", function(d, i) {
+            return d * 14.6;
+        })
+        .attr("y", 105)
+        .attr("stroke", "BLACK")
+        .attr("font-size", "12px")
+        .attr("font-family", "sans-serif")
+        .text(function(d) {
+            return d;
+        });
+
+</script>
+
+</html>
