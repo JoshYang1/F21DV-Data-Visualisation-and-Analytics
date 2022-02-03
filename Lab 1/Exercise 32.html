@@ -43,9 +43,13 @@
             .append("g")
             .attr("transform","translate(" + margin + "," + margin + ")");
 
+        // https://stackoverflow.com/questions/24534988/d3-get-the-bounding-box-of-a-selected-element
+        console.log(d3.select('#container').node().getBoundingClientRect())
+
         svg.append("svg:image")
             .attr("xlink:href", filepath)
             .attr("width", xMax)
+            .attr("height", d3.select('#container').node().getBoundingClientRect().height)
 
         // X Axis
         const x = d3.scaleLinear()
