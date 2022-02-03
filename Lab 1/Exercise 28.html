@@ -59,7 +59,8 @@ d3.csv(filepath).then(function(data) {
                 .attr("transform", function (d, i) {
                     return "translate(0," + i * barHeight + ")";
                 });
-
+    
+    // https://stackoverflow.com/questions/41848677/how-to-make-a-color-scale-in-d3-js-to-use-in-fill-attribute
     g.append("rect")
         .attr("width", function (d) {
             return scale(d);
