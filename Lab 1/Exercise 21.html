@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src='https://d3js.org/d3.v7.min.js'></script>
+</head>
+
+<body>
+    <div id="container"></div>
+</body>
+
+<style>
+    #container {
+        margin: 0 auto;
+        width: 50%;
+    }
+</style>
+
+<script>
+
+    let filepath = './Data/Exercise 18 Data.csv';
+    let filepath2 = './Data/Exercise 19 Data.csv';
+
+    const barchart = file => {
+
+        // reading the csv file
+        d3.csv(file).then(function(data) {
+
+            const dataset = [];
+
+            // reading each line of the csv file
+            data.forEach(function(d) {
+                dataset.push(parseInt(d.value))
+            });
+
+            const width = 500, height = 20, margin = 1
+
+            var xscale = d3.scaleLinear()
+                            .domain([0, d3.max(dataset)])
+                            .range([0, width-10]);
+
+            var yscale = d3.scaleLinear()
+                            .domain([0, dataset.length])
+                            .range([height*dataset.length, -15]);
+
+            var svg = d3.select("#container")
+                            .append("svg")
+                            .attr("width", width )
+                            .attr("height", height * dataset.length+ 30)
+
+            var g = svg.selectAll("g")
+                        .data(dataset)
+                        .enter()
+                        .append("g")
+                        .attr("transform", function (d, i) {
+                            return "translate(0," + i * height + ")";
+                        })
+
+            g.append("rect")
+                .attr("width", function (d) {
+                    return xscale(d);
+                })
+                .attr("height",height - margin)
+                .attr("fill", function(d, i) {
+                                    if ( d <= 100 ) {
+                                        console.log(d)
+                                        return "green";
+                                    } else if (d >= 500) {
+                                        return "red";        
+                                    }
+                                    return 'blue';
+                                });
+
+            g.append("text")
+                .attr("x", function (d) { return (xscale(d)); })
+                .attr("y", height / 2)
+                .attr("dy", ".35em")
+                .style('text-anchor', 'end')
+                .text(function (d) { return d; });
+
+            var x_axis = d3.axisBottom()
+                            .scale(xscale);
+            
+            
+            var y_axis_left = d3.axisLeft()
+                                .scale(yscale);
+
+            svg.append("g")
+                .attr("transform", "translate(0," + height * dataset.length + ")")
+                .call(x_axis);
+            
+            svg.append("g")
+                .attr("transform", "translate(20,20)")
+                .call(y_axis_left)
+            });
+        }
+
+    var display1 = barchart(filepath);
+
+    var display2 = barchart(filepath2);
+                
+</script>
+
+</html>
