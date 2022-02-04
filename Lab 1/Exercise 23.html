@@ -26,9 +26,9 @@
 
             // reading each line of the csv file
             data.forEach(function(d) {
+                // Need to parse to number as input is a string
                 d.x = parseInt(d.x)
                 d.y = parseInt(d.y)
-
             });
 
             // Set Dimensions
@@ -41,8 +41,6 @@
             // so the plotted data fits perfectly
             const xExtent = d3.extent( data, d=>{ return d.x } );
             const yExtent = d3.extent( data, d=>{ return d.y } );
-
-            console.log(xExtent)
 
             // Append SVG Object to the Page
             const svg = d3.select("#container")

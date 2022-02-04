@@ -18,6 +18,7 @@
 
 <script>
 
+    // Create a function which can be called
     const graph = data => {
 
         // Set Dimensions
@@ -25,8 +26,6 @@
         const margin = 40;
         const xMax = xSize - margin*2;
         const yMax = ySize - margin*2;
-        // Create Random Points
-
 
         // Get the 'limits' of the data - the full extent (mins and max)
         // so the plotted data fits perfectly
@@ -46,13 +45,13 @@
             .domain([ xExtent[0], xExtent[1] ])
             .range([0, xMax]);
 
-        // bottom
+        // bottom axis
         svg.append("g")
             .attr("transform", "translate(0," + yMax + ")")
             .call(d3.axisBottom(x))
             .attr('color', 'green'); // make bottom axis green
 
-        // top
+        // top axis
         svg.append("g")
             .call(d3.axisTop(x));
 
@@ -82,10 +81,10 @@
             );
     };
 
-
     const numPoints = 100;
     const data = [];
 
+    // Create Random Points
     for (let i = 0; i < numPoints; i++) { data.push( {x: i/100, y: Math.cos( 6.2 * i/100 ) } ); }
 
     var result = graph(data);

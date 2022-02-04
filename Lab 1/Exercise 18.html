@@ -19,6 +19,7 @@
 
         // reading each line of the csv file
         data.forEach(function(d) {
+            // each entry is a string and needs to be converted to a number
             dataset.push(parseInt(d.value))
         });
 

@@ -26,6 +26,7 @@
         const xMax = xSize - margin*2;
         const yMax = ySize - margin*2;
 
+        // using the ordinal colour scheme on this occasion
         const myColor = d3.scaleOrdinal().domain(data.sine).range(d3.schemeSet3);
 
         // Get the 'limits' of the data - the full extent (mins and max)
@@ -81,7 +82,7 @@
             .y(function(d) { return y(d.y) })
             );
 
-         // Add the line
+        // Add the line
         svg.append("path")
             .datum(data.cosine)
             .attr("fill", "none")

@@ -100,7 +100,8 @@
             .attr("cy", function(d){return y(d.y)})
             .attr("fill", "none")
             .attr("stroke", "black")
-
+        
+        // Adding text to the data points by creating a new class and appending text
         // https://stackoverflow.com/questions/12266967/d3-js-how-to-add-labels-to-scatter-points-on-graph
         svg.selectAll(".dodo")
             .data(data.cosine)
@@ -110,6 +111,7 @@
             .attr("y", function(d) { return y(d.y); })
             .attr("dx", ".71em")
             .attr("dy", ".35em")
+            // Only append text to every 10th data point
             .text(function(d,i) { if (i % 10 == 0) {return i}});
 
         // https://stackoverflow.com/questions/60029911/change-symbol-for-graph

@@ -26,9 +26,13 @@
         const xMax = xSize - margin*2;
         const yMax = ySize - margin*2;
         
+        // Image location
         let filepath = './Data/image.jpg';
-
-        const myColor = d3.scaleOrdinal().domain(data.sine).range(d3.schemeSet3);
+        
+        // Colour scheme
+        const myColor = d3.scaleOrdinal()
+                            .domain(data.sine)
+                            .range(d3.schemeSet3);
 
         // Get the 'limits' of the data - the full extent (mins and max)
         // so the plotted data fits perfectly
@@ -37,15 +41,16 @@
 
         // Append SVG Object to the Page
         const svg = d3.select("#container")
-            .append("svg")
-            .attr('width', xSize )
-            .attr('height', ySize )
-            .append("g")
-            .attr("transform","translate(" + margin + "," + margin + ")");
+                        .append("svg")
+                        .attr('width', xSize )
+                        .attr('height', ySize )
+                        .append("g")
+                        .attr("transform","translate(" + margin + "," + margin + ")");
 
+        // Retrieve the bounds of the container element
         // https://stackoverflow.com/questions/24534988/d3-get-the-bounding-box-of-a-selected-element
         console.log(d3.select('#container').node().getBoundingClientRect())
-
+        
         svg.append("svg:image")
             .attr("xlink:href", filepath)
             .attr("width", xMax)

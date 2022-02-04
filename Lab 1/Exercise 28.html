@@ -14,14 +14,6 @@
         margin: 0 auto;
         width: 50%;
     }
-
-    #div {
-        display: inline-block;
-        width : 10px;
-        height : 10px;
-        margin: 1px;
-        padding: 10px;
-    }
 </style>
 
 <script>
@@ -40,8 +32,11 @@ d3.csv(filepath).then(function(data) {
     const width = 500;
     const barHeight = 20;
     const margin = 1;
-
-    var myColor = d3.scaleSequential().domain(dataset).interpolator(d3.interpolatePuRd);
+    
+    // Colour scheme
+    var myColor = d3.scaleSequential()
+                    .domain(dataset)
+                    .interpolator(d3.interpolatePuRd);
 
     var scale = d3.scaleLinear()
                     .domain([d3.min(dataset), d3.max(dataset)])
@@ -66,6 +61,7 @@ d3.csv(filepath).then(function(data) {
             return scale(d);
         })
         .attr("height", barHeight - margin)
+        // Every datapoint is given a colour from the scheme based on its value
         .attr("fill",  d => myColor(d))
 
     g.append("text")

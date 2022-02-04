@@ -68,7 +68,7 @@
             .attr("transform", `translate(${yMax},0)`)
             .call(d3.axisRight(y));
 
-        // Add the line
+        // Add sine line
         svg.append("path")
             .datum(data.sine)
             .attr("fill", "none")
@@ -79,7 +79,7 @@
             .y(function(d) { return y(d.y) })
             );
 
-                // Add the line
+        // Add cosine line
         svg.append("path")
             .datum(data.cosine)
             .attr("fill", "none")
@@ -98,6 +98,7 @@
     for (let i = 0; i < numPoints; i++) { sine.push( {x: i/100, y: Math.sin( 6.2 * i/100 ) } ); }
     for (let i = 0; i < numPoints; i++) { cosine.push( {x: i/100, y: Math.cos( 6.2 * i/100 ) } ); }
 
+    // Creating an object that contains both arrays
     var data = {
         sine: sine,
         cosine: cosine

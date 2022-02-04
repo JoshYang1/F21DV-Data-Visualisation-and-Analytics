@@ -68,7 +68,7 @@
             .attr("transform", `translate(${yMax},0)`)
             .call(d3.axisRight(y));
 
-        // Add the line
+        // Add the sine line
         svg.append("path")
             .datum(data.sine)
             .attr("fill", "none")
@@ -79,7 +79,7 @@
             .y(function(d) { return y(d.y) })
             );
 
-         // Add the line
+         // Add the cosine line
         svg.append("path")
             .datum(data.cosine)
             .attr("fill", "none")
@@ -90,6 +90,7 @@
             .y(function(d) { return y(d.y) })
             );
 
+        // Add circles to each cosine data point
         svg.append("g").selectAll("dot")
             .data(data.cosine)
             .enter()
@@ -99,7 +100,8 @@
             .attr("cy", function(d){return y(d.y)})
             .attr("fill", "none")
             .attr("stroke", "black")
-        
+
+        // Add circles to each sine data point
         svg.append("g").selectAll("dot")
             .data(data.sine)
             .enter()

@@ -15,6 +15,7 @@
 
     var data = [10, 15, 20, 25, 30];
 
+    // Creating SVG element and appending to the body element
     var svgContainer = d3.select("body")
                 .append("svg")
                 .attr("width", width)
@@ -28,15 +29,19 @@
                     .domain([0, d3.max(data)])
                     .range([height/2, 0]);
 
+    // Bottom axis
     var x_axis = d3.axisBottom()
                     .scale(xscale);
-
+                
+    // Left axis
     var y_axis_left = d3.axisLeft()
                     .scale(yscale);
 
+    // Top axis
     var top_axis = d3.axisTop()
                     .scale(xscale);
 
+    // Right axis
     var y_axis_right = d3.axisRight()
                     .scale(yscale);
 

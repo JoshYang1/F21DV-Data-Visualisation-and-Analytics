@@ -79,7 +79,7 @@
             .y(function(d) { return y(d.y) })
             );
 
-         // Add the line
+        // Add the line
         svg.append("path")
             .datum(data.cosine)
             .attr("fill", "none")
@@ -100,23 +100,22 @@
             .attr("fill", "none")
             .attr("stroke", "black")
 
-
+        // Hand drawn triangle rather than using symbolTriangle
         // https://stackoverflow.com/questions/60029911/change-symbol-for-graph
         var symbol = function() {
-        // Hand drawn triangle:
             return d3.create('svg:path').attr("d","M0,8L-5,-3L5,-3Z").node()
         }
 
+        // Appending the triangle to every sine data point
         // https://stackoverflow.com/questions/33881962/triangle-scatter-plot-with-d3-js
         svg.append("g").selectAll(".symbol")
             .data(data.sine)
             .enter()
             .append(symbol)
             .attr("class", "symbol")
+            // Fixing the symbol the coordinates of the data
             .attr("transform", function(d) { return "translate("+x(d.x) + "," + y(d.y) +")" })
     };
-
-
 
     const numPoints = 100;
     const sine = [];

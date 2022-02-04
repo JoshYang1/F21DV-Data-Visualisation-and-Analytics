@@ -26,7 +26,7 @@
     const yMax = ySize - margin*2;
 
     // Append SVG Object to the Page
-    const svg = d3.select("body")
+    const svg = d3.select("#container")
         .append("svg")
         .attr('width', xSize )
         .attr('height', ySize )
@@ -35,7 +35,10 @@
 
     const radius = Math.min(xSize, ySize) / 2;
     
-    var color = d3.scaleOrdinal().domain(data).range(d3.schemeSet3);
+    // Colour scheme
+    var color = d3.scaleOrdinal()
+                .domain(data)
+                .range(d3.schemeSet3);
 
     // Generate the pie
     var pie = d3.pie();

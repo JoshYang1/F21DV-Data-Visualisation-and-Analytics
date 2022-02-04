@@ -16,8 +16,10 @@
     const barHeight = 20;
     const margin = 1;
 
+    // Mapping the data to the visual
     var scale = d3.scaleLinear()
                     .domain([d3.min(data), d3.max(data)])
+                    // scaling factor of 0.5
                     .range([50, 500]);
 
     var svg = d3.select("body")
@@ -34,6 +36,7 @@
                 });
 
     g.append("rect")
+        // scale each element in the dataset
         .attr("width", function (d) {
             return scale(d);
         })
