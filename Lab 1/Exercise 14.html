@@ -62,8 +62,6 @@
         // passing the filtered data into the count function
         var output = countUnique(filtered)
 
-        //console.log(Object.keys(output)[0])
-
         const width = 500;
         const scaleFactor = 10;
         const barHeight = 20;
@@ -71,9 +69,8 @@
 
         var maxValue = 0;
 
-        // looping through each key in the object and creating a 'p' HTML element
+        // looping through each key in the object and finding the max value
         Object.keys(output).forEach(key => {
-            // setting the text of the element to the key and value
             if(output[key] > maxValue) {
                 maxValue = output[key]
             }
@@ -87,8 +84,6 @@
             .append("svg")
             .attr("width", width)
             .attr("height", barHeight * Object.keys(output).length);
-
-        console.log(output)
 
         var g = svg.selectAll("g")
             .data(output)

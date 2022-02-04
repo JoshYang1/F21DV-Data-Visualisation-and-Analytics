@@ -28,11 +28,13 @@
                 .attr("transform", function(d, i) {
                     return "translate(0,0)";
                 })
-
+    
+    // Looping through the dataset
     for (var j = 0; j < data.length; j++) {
+        // If the element is divisible by 10 then it will be a circle
         if (data[j] % 10 == 0) {
-            console.log(data[j])
             g.append("circle")
+                // Some attributes are dependent on the value of the element and will increase in size
                 .attr("cx", function(d) {
                     return data[j]*15;
                 })
@@ -45,8 +47,8 @@
                 .attr("fill", function(d, i){
                     return colors[j];
                 })
+        // If the element is not divisible by 10 then it will be a rectangle
         } else {
-            console.log("hello" + data[j])
             g.append("rect")
                 .attr("x", function(d) {
                         return data[j]*14;
