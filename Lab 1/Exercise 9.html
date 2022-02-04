@@ -24,18 +24,18 @@
     d3.csv(titaniccsv).then(function(data) {
 
         // creating two new arrays to store the counts
-        const arrayN = []
-        const arrayS = []
+        const titleArray = []
+        const sexArray = []
         
         // reading each line of the csv file
         data.forEach(function(d) {
 
             // splitting the Name element, separated by a blank space
-            var title = d.Name.split(" ")
+            var splitName = d.Name.split(" ")
             // adding the title of the passenger to an array which should be the element at index 1
-            arrayN.push(title[1])
+            titleArray.push(splitName[1])
             // adding the sex of the passenger to an array
-            arrayS.push(d.Sex)
+            sexArray.push(d.Sex)
         });
 
         // creating a function to count the number of unique values 
@@ -50,8 +50,8 @@
             return counts;
         };
 
-        console.log(countUnique(arrayN));
-        console.log(countUnique(arrayS))
+        console.log(countUnique(titleArray));
+        console.log(countUnique(sexArray))
     });
     
 

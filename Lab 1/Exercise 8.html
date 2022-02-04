@@ -15,11 +15,12 @@
                 .selectAll("span")
                 .data(myData)
                 .enter()
-                .append('p')
-                .text(function (d, i) {
+                .append('span')
+                .text(function (d) {
                     return d;
                 })                    
-                .style("color", function(d, i) {
+                .style("color", function(d) {
+                    // Checking each element in the data provided and colouring dependent on if it is a string or not
                     // https://stackoverflow.com/questions/47048416/checking-the-type-of-an-element-in-an-array-in-javascript/47048475
                         if(typeof d === 'string') {
                             return "blue";

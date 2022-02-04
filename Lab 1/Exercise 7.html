@@ -22,6 +22,7 @@
                         return 'cont:' + d; // return value is used to set the 'text'
                     })
                     .style("color", function(d, i) {
+                        // additional check included using && operand
                         if ( d >= 50 && d <= 100 ) {
                             return "red";
                         } else {
