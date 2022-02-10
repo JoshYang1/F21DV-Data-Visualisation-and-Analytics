@@ -3,57 +3,56 @@
 
 <head>
     <script src='https://d3js.org/d3.v7.min.js'></script>
+
+
+<style>
+#container {
+    /*just so we can see it*/
+    height: 400px;
+    width: 400px;
+    margin: 0 auto;
+    width: 50%;
+}
+
+circle {
+    display: none;
+}
+
+#container:hover circle {
+    display:block;
+}
+</style>
 </head>
+
 
 <body>
     <div id="container"></div>
+      </div>
 </body>
-
-<style>
-
-    #container {
-        margin: 0 auto;
-        width: 50%;
-        border: 1px solid green;
-    }
-
-    #item {
-        position: relative;
-        background-color: yellow;
-        padding: 20px;
-        display: none;
-    }
-
-    circle {
-        border: 1px solid blue;
-        fill: lightblue;
-        stroke: purple;
-        position: relative;
-    }
-
-    circle:hover + #item {
-        position: absolute;
-        display: inline-block;
-    }
-
-</style>
 
 <script>
 
+    // Set Dimensions
     const xSize = 600; const ySize = 600;
 
-    // Create SVG element
-    var svg = d3.select("#container")
+    // Append SVG Object to the Page
+    const svg = d3.select("#container")
                 .append("svg")
-                .attr('width', xSize )
-                .attr('height', ySize )
+                .attr("width", 400)
+                .attr("height", 400)
+                .style("border", '1px solid green');
+    
+    svg.append('circle')
+        .attr("cx", 100)
+        .attr("cy", 100)
+        .attr("r", 100)
 
-    // Create and append circle
-    svg.append("circle")
-        .attr("cx", 200)
-        .attr("cy", 200)
-        .attr("r",  100)
+    svg.append("rect")
+        .attr("x", 200)
+        .attr("y", 200)
+        .attr("width", 200)
+        .attr("height", 200)
 
 </script>
 
-</html>
+</html
