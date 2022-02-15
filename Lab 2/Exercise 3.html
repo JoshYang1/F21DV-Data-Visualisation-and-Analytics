@@ -22,10 +22,10 @@
     const ySize = '20px';
 
     // Append div element to the Page
-    const svg = d3.select("#container")
-                .append("div")
-                .style("height", ySize)
-                .style('background-color', 'green');
+    d3.select("#container")
+        .append("div")
+        .style("height", ySize)
+        .style('background-color', 'green');
     
     //n https://developer.mozilla.org/en-US/docs/Web/CSS/border-style
     d3.selectAll("div")
