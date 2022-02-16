@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src='https://d3js.org/d3.v7.min.js'></script>
+<style>
+    #container {
+        margin: 0 auto;
+        width: 50%;
+    }
+</style>
+</head>
+
+<body>
+   <div id="container"></div>
+</body>
+
+<script>
+
+    // Append div element to the Page
+    d3.select("#container")
+        .append("div")
+        .style('width', '100px')
+        .style('height', '100px')
+        .style('background-color', 'blue')
+        .transition()
+        // 2 second transition
+        .duration(2000)
+        .style("background-color", "red")
+        .transition()
+        .duration(2000)
+        .style("background-color","green");
+
+    </script>
+
+</html
