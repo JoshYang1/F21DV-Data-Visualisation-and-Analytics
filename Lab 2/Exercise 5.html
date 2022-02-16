@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src='https://d3js.org/d3.v7.min.js'></script>
+<style>
+    #container {
+        margin: 0 auto;
+    }
+</style>
+</head>
+
+<body>
+   <div id="container"></div>
+</body>
+
+<script>
+
+    // Append div element to the Page
+    const svg = d3.select("#container")
+                .append("svg")
+
+    // Requesting the dimensions of the container div element
+    const xSize = d3.select('#container').node().getBoundingClientRect().width; const ySize = d3.select('#container').node().getBoundingClientRect().width;
+
+    // Setting the the dimensions of the svg to fit the container
+    svg.style("height", ySize)
+                .style("width", xSize)
+                .style('background-color', 'green')
+                .on("mouseover", handleMouseOver);
+
+    // Create Event Handler for mouse over
+    function handleMouseOver(d, i) {
+
+        // Specify where to put label of text
+        svg.append("text")
+            .attr("x", d.x)
+            .attr("y", d.y)
+            .html(function() {
+                return [d.x, d.y];  // Value of the text
+            });
+        }
+
+    </script>
+
+</html
