@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src='https://d3js.org/d3.v7.min.js'></script>
+<style>
+    #container {
+        margin: 0 auto;
+        width: 50%;
+    }
+</style>
+</head>
+
+<body>
+   <div id="container"></div>
+</body>
+
+<script>
+
+    function easeExamples(easement) {
+
+        d3.select('#container')
+        .append("div")
+        .style('width', '100px')
+        .style('height', '100px')
+        .style('background-color', 'blue')
+        .style('transform', 'scale(1.0)')
+        .transition()
+        .ease(easement )
+        .duration(8000)
+        .style("background-color", "red")
+        .style('transform', 'scale(0.5)');
+
+    };
+    
+    // Example of transition ease bounce
+    easeExamples(d3.easeBounce);
+    
+    // Example of transition ease elastic
+    easeExamples(d3.easeElastic);
+    
+    // Example of transition ease exponential
+    easeExamples(d3.easeExp);
+
+    </script>
+
+</html
+
