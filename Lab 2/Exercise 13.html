@@ -38,11 +38,18 @@
             .attr("y", y)
             .attr("height", 20)
             .attr("width", 10)
+            // Grow transition
             .transition()
             .ease(d3.easeLinear)
             .duration(2000)
             .delay(delay)
             .attr("height",100)
+            // Shrink transition
+            .transition()
+            .ease(d3.easeLinear)
+            .duration(2000)
+            .delay(delay)
+            .attr("height",20)
     };
 
     // Calling the function to create bars on the svg element
