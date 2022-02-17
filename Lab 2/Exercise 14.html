@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src='https://d3js.org/d3.v7.min.js'></script>
+<style>
+    #container {
+        margin: 0 auto;
+        width: 50%;
+    }
+</style>
+</head>
+
+<body>
+   <div id="container"></div>
+</body>
+
+<script>
+
+    // Append div element to the Page
+    const svg = d3.select("#container")
+            .append("svg")
+
+    // Requesting the dimensions of the container div element
+    const xSize = d3.select('#container').node().getBoundingClientRect().width; const ySize = d3.select('#container').node().getBoundingClientRect().width;
+
+    // Setting the the dimensions of the svg to fit the container
+    svg.style("height", ySize)
+                .style("width", xSize)
+                .style('background-color', 'green')
+
+    // Create function to avoid duplicate code
+    // Parameters include x and y position and the total delay
+    function barDelay(x, y, delay) {
+        svg.append("rect")
+            .style("fill", "blue")
+            .attr("x", x)
+            .attr("y", y)
+            .attr("height", 20)
+            .attr("width", 10)
+            // Grow transition
+            .transition()
+            .ease(d3.easeLinear)
+            .duration(2000)
+            .delay(delay)
+            .style("fill", "red")
+            .attr("height",100)
+            // Shrink transition
+            .transition()
+            .ease(d3.easeLinear)
+            .duration(2000)
+            .delay(delay)
+            .style("fill", "blue")
+            .attr("height",20)
+
+    };
+
+    // Calling the function to create bars on the svg element
+    var bar1 = barDelay(100, 20, 0);
+    var bar2 = barDelay(120, 20, 2000);
+    var bar3 = barDelay(140, 20, 4000);
+
+</script>
+</html>
