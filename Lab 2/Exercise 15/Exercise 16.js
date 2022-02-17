@@ -1,4 +1,3 @@
-
     // Definining the filepath
     let dataFile = './Data.csv';
 
@@ -117,18 +116,17 @@
                     return ySize - margin - y(d.value) + 10; 
                     });
             
-            // Appending text to g element
-            g.append("text")
-                .attr('class', 'val')
-                .attr('x', function() {
-                    return x(d.year);
-                    })
-                .attr('y', function() {
-                    return y(d.value);
-                    })
-                .text( function(d) { 
-                    return '$' + i.value; 
-                    } ); // Value of the text
+            // https://stackoverflow.com/questions/67480486/d3-js-add-text-above-bar-chart-not-show
+            // Appending a text element
+            g.selectAll(".bar-title")
+                .data(data)
+                .enter()
+                .append("text")
+                .classed('bar-title', true)
+                .attr('text-anchor', 'middle')
+                .attr("x", d => x(d.year) + x.bandwidth()/2)
+                .attr("y", d => y(d.value) - 15)
+                .text(d => `$${d.value}`);
                 };
 
         // Museout event handler function
@@ -150,7 +148,7 @@
                     });
             
             // Remove the text label 
-            d3.selectAll('.val')
+            d3.selectAll('.bar-title')
                 .remove()
 
             };
