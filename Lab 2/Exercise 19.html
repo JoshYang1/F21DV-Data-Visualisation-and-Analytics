@@ -14,13 +14,15 @@
 <body>
    <div id="container">
     <!-- Add buttons -->
-    <button onclick="update(data1)">Variable 1</button>
-    <button onclick="update(data2)">Variable 2</button>
-    <button onclick="update(data3)">Variable 3</button>
+    <button onclick="update(data1,colours[0])">Variable 1</button>
+    <button onclick="update(data2, colours[1])">Variable 2</button>
+    <button onclick="update(data3, colours[2])">Variable 3</button>
    </div>
 </body>
 
 <script>
+    
+    const colours = ["black", "blue", "yellow"];
 
     // create 3 data_set
     const data1 = [
@@ -49,7 +51,7 @@
     var margin = {top: 30, right: 30, bottom: 50, left: 20};
 
     // Requesting the dimensions of the container div element
-    const xSize = d3.select('#container').node().getBoundingClientRect().width + 200; 
+    const xSize = d3.select('#container').node().getBoundingClientRect().width; 
     const ySize = d3.select('#container').node().getBoundingClientRect().width - 200;
 
     // Setting the the dimensions of the svg to fit the container
