@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src='https://d3js.org/d3.v7.min.js'></script>
+<style>
+    #container {
+        margin: 0 auto;
+        width: 50%;
+    }
+</style>
+</head>
+
+<body>
+   <div id="container"></div>
+</body>
+
+<script>
+
+    // Append div element to the Page
+    const svg = d3.select("#container")
+                .append("svg")
+
+    // Requesting the dimensions of the container div element
+    const xSize = d3.select('#container').node().getBoundingClientRect().width; const ySize = d3.select('#container').node().getBoundingClientRect().width;
+
+    // Setting the the dimensions of the svg to fit the container
+    svg.style("height", ySize)
+                .style("width", xSize)
+                .style('background-color', 'green')
+    
+    // Appending a circle to the svg that changes size and colour when mouse travels over
+    svg.append("text")
+        .attr("x", 200)
+        .attr("y", 200)
+        .html("Hello, mouseover me!")
+        .style("font-size", "40px")
+        .style("fill","red")
+        .on("mouseover", function(event){
+            d3.select(this)
+                .transition()
+                .ease(d3.easeBounce)
+                .duration(5000)
+                .style("fill", "blue")
+                .style("font-size", "60px")
+
+            // Get current event info
+            // Note: d3.event (event) passed as the first argument to all listeners
+            console.log(event);
+            // Get x & y co-ordinates
+            // Note: d3.mouse was removed in d3v6, you should use d3.pointer(event)
+            console.log(d3.pointer(event));
+        })
+        .on("mouseout", function(){
+            d3.select(this)
+                .transition()
+                .ease(d3.easeBounce)
+                .duration(5000)
+                .style("font-size", "40px")
+                .style("fill","red");
+        })
+
+</script>
+</html>
