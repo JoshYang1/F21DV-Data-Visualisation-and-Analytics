@@ -1,26 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <script src='https://d3js.org/d3.v7.min.js'></script>
-<style>
-    #container {
-        margin: 0 auto;
-        width: 50%;
-    }
-</style>
-</head>
-
-<body>
-   <div id="container">
-    <!-- Add buttons -->
-    <button onclick="update(data1,colours[0])">Variable 1</button>
-    <button onclick="update(data2, colours[1])">Variable 2</button>
-    <button onclick="update(data3, colours[2])">Variable 3</button>
-   </div>
-</body>
-
-<script>
     
     const colours = ["black", "blue", "yellow"];
 
@@ -91,6 +68,21 @@
 
         u.enter()
             .append("rect")
+            // https://stackoverflow.com/questions/34179006/d3-text-on-mouseover
+            .on("mouseover", function(d, i){
+                d3.select(this.parentNode)
+                    .append("text")
+                    .attr('text-anchor', 'middle')
+                    .classed('bar-title', true)
+                    .attr("x", d => x(i.group) + x.bandwidth()/2)
+                    .attr("y", d => y(i.value) - 15)
+                    .text(d => `${i.value}`)
+            })
+            .on("mouseout", function(){
+                // Remove the text label 
+                d3.selectAll('.bar-title')
+                    .remove()
+            })
             .merge(u)
             .transition()
             .duration(1000)
@@ -104,11 +96,8 @@
             .attr("height", function(d) { 
                 return ySize - y(d.value); 
                 })
-            .attr("fill", colour)
+            .attr("fill", colour);
         };
-
+        
     // Initialize the plot with the first dataset
     update(data1, "red");
-
-</script>
-</html>
