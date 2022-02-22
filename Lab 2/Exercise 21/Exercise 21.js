@@ -50,23 +50,23 @@
                 .domain([0,26])
                 .range([ySize, 0]);
 
-    console.log(ySize)
-    
-    // Appending axises
+    // Appending bottom axis
     svg.append("g")
         .attr("transform", "translate(" + margin.bottom + ","+ (ySize + margin.left) + ")")
         .call(d3.axisBottom(x));
    
+    // Appending left axis
     svg.append("g")
         .attr("class", "myYaxis")
         .attr("transform", "translate(" + margin.bottom + ","+ margin.left +")")
         .call(d3.axisLeft(y));
 
-        // Appending axises
+    // Appending top axis
     svg.append("g")
         .attr("transform", "translate(" + margin.bottom + ","+ margin.top + ")")
         .call(d3.axisTop(x));
-   
+    
+    // Appending right axis
     svg.append("g")
         .attr("class", "myYaxis")
         .attr("transform", "translate(" + (ySize + 250) + ","+ margin.left +")")
