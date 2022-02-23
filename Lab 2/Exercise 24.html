@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script type = "text/javascript" src='https://d3js.org/d3.v7.min.js'></script>
+<style>
+    #container {
+        margin: 0 auto;
+        width: 50%;
+    }
+</style>
+</head>
+
+<body>
+   <div id="container"></div>
+</body>
+
+<script>
+    let intr = d3.interpolate( [20, 40, 4], [1, 12, 10])
+    console.log("Type of returned function is: ", typeof (intr) );
+    // Type of returned function is:  function
+    console.log( intr(0.2) )
+    // 0: 16.2
+    // 1: 34.4
+    // 2: 5.2
+
+    // The d3-interpolate module offers a way of computing intermediate values between two given values
+    // When an array of the same length is provided it will interpolate the elements at the same index
+    // 0.2 is closer to element a in the first array whereas 0.5 would be the halway point and closer to 1 would be the second array
+</script>
+
+
+</html>
