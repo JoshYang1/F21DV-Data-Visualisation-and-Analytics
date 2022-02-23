@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script type = "text/javascript" src='https://d3js.org/d3.v7.min.js'></script>
+<style>
+    #container {
+        margin: 0 auto;
+        width: 50%;
+    }
+</style>
+</head>
+
+<body>
+   <div id="container"></div>
+</body>
+
+<script>
+    let cc = d3.interpolate('red', 'green')
+    console.log( cc(0.5) );
+    // rgb(128, 64, 0)
+
+    // The d3-interpolate module offers a way of computing intermediate values between two given values
+    // A color interpolator is usually represented as a color ramp going from 0 to the left (color a), to 1 to the right (color b).
+    // https://observablehq.com/@d3/d3-interpolate
+</script>
+
+
+</html> 
