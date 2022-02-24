@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script type = "text/javascript" src='https://d3js.org/d3.v7.min.js'></script>
+<style>
+    #container {
+        margin: 0 auto;
+        width: 50%;
+    }
+</style>
+</head>
+
+<body>
+    <div id="container">
+        <button onclick="pieChart(apples)">Apples</button>
+        <button onclick="pieChart(oranges)">Oranges</button>
+    </div>`
+</body>
+
+<script>
+    const apples = [5345, 2879, 1997, 2437, 4045],
+        oranges = [1234, 912, 923, 8123, 3479];
+
+    var width = 460,
+        height = 300,
+        radius = Math.min(width, height) / 2;
+
+    var color = d3.scaleOrdinal()
+                    .range(d3.schemeSet3);
+
+    var arc = d3.arc()
+                .innerRadius(radius - 100)
+                .outerRadius(radius - 50);
+
+    var svg = d3.select("#container")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    // A function that create / update the plot for a given dataset
+    const pieChart = data => {
+
+        var pie = d3.pie()
+                .value(function(d) {return d; })
+                .sort(function(a, b) {
+                    return d3.ascending(a, b);
+                    } ) // This make sure that group order remains the same in the pie chart
+  
+        var data_ready = pie(data)
+
+        var update = svg.selectAll("path")
+                            .data(data_ready); 
+
+        update.enter()
+                .append("path")
+                .merge(update)
+                .transition()
+                .duration(5000)
+                .attr("d", arc)
+                .attr("fill", function(d, i) { 
+                    return color(i); 
+                });
+
+        update.exit()
+                .remove()
+    };
+
+    // Initialize the plot with the first dataset
+    pieChart(apples);
+
+</script>
+</html>
+
+
+
