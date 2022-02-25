@@ -17,6 +17,8 @@
 
 <script>
 
+    // Function created which takes an easement style as a parameter
+    // Creates a div element and appends it to the container
     function easeExamples(easement) {
 
         d3.select('#container')
@@ -27,6 +29,7 @@
         .style('transform', 'scale(1.0)')
         .transition()
         .ease(easement )
+        // 8 second transition
         .duration(8000)
         .style("background-color", "red")
         .style('transform', 'scale(0.5)');

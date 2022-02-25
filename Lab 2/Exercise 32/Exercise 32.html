@@ -3,11 +3,9 @@
 
 <head>
     <script type = "text/javascript" src='https://d3js.org/d3.v7.min.js'></script>
+    <link rel="stylesheet" href="Exercise 32.css">
 <style>
-    #container {
-        margin: 0 auto;
-        width: 50%;
-    }
+
 </style>
 </head>
 
@@ -26,7 +24,7 @@
         .attr('height',height);
 
     // Reading in csv file
-    d3.csv('./Exercise 29/Data.csv').then(function(data) {
+    d3.csv('../Exercise 29/Data.csv').then(function(data) {
 
         // Colour scheme
         // https://www.d3-graph-gallery.com/graph/custom_color.html

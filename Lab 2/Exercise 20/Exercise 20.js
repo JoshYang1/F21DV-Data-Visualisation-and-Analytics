@@ -69,6 +69,7 @@
         u.enter()
             .append("rect")
             // https://stackoverflow.com/questions/34179006/d3-text-on-mouseover
+            // Value of the bar will be displayed when the mouse hovers over
             .on("mouseover", function(d, i){
                 d3.select(this.parentNode)
                     .append("text")
