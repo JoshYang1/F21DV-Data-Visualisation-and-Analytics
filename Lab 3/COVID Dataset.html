@@ -3,6 +3,7 @@
 
 <head>
     <script type = "text/javascript" src='https://d3js.org/d3.v7.min.js'></script>
+    <script type = "text/javascript" src="./COVID Dataset.js"></script>
     <meta charset="UTF-8">
     <meta name="description" content="COVID Dataset Visualisations">
     <meta name="keywords" content="HTML, CSS, JavaScript">
@@ -11,13 +12,11 @@
 </head>
 
 <body>
-    <div id="container">
+    <svg id="map"></svg>
         <!-- Add buttons -->
         <button onclick="update(data1,colours[0])">Variable 1</button>
         <button onclick="update(data2, colours[1])">Variable 2</button>
         <button onclick="update(data3, colours[2])">Variable 3</button>
-    </div>
-    <script type = "text/javascript" src="./COVID Dataset.js"></script>
 </body>
 
 </html>
