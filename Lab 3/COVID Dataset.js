@@ -1,219 +1,233 @@
+// importing the csv file
+let dataset = 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv';
 
-    // importing the csv file
-    let dataset = 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv';
+var margin = {top: 20, right: 10, bottom: 40, left: 100},
+width = 800 - margin.left - margin.right,
+height = 800 - margin.top - margin.bottom;
 
- 
+var current = d3.select('#current');
 
-    var margin = {top: 20, right: 10, bottom: 40, left: 100},
-    width = 800 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
-
-    // Have to use a SVG rather than a canvas as the latter does not support event handling
-    var svg = d3.select("svg")
+var canvas = d3.select('#globe')
                 .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform",
-                        "translate(" + margin.left + "," + margin.top + ")");
-    
-    var projection = d3.geoNaturalEarth1()
-                        .scale(width / 1.5 / Math.PI)
-                        .translate([width / 2, height / 1.4])
-    
-    // will need to get the max value when values have been pushed to the data structure
+                .attr("height", height + margin.top + margin.bottom);
 
+var context = canvas.node()
+                    .getContext('2d');
 
-    var deaths = new Map();
-    var domain = []
+let projection = d3.geoOrthographic()
+                    .scale(width / Math.PI);
 
-    // reading the csv file
-    d3.csv(dataset).then(function(data) {
+let geoGenerator = d3.geoPath()
+                    .projection(projection)
+                    .pointRadius(4)
+                    .context(context);
+                    
+let graticule = d3.geoGraticule10();
 
-        // https://observablehq.com/@d3/d3-group-d3-hierarchy
-        // https://observablehq.com/@d3/d3-hierarchy
-        var entries = d3.group(data, d => d.continent, d => d.location, d => d.date)
+var degPerMs = 6 / 1000;
+var rotationDelay = 3000;
 
-        //https://flaviocopes.com/how-to-get-yesterday-date-javascript/
+var v0; // Mouse position in Cartesian coordinates at start of drag gesture.
+var r0; // Projection rotation as Euler angles at start.
+var q0; // Projection rotation as versor at start.
 
- 
-        //https://stackoverflow.com/questions/23593052/format-javascript-date-as-yyyy-mm-dd
-        //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get
-        var result = entries.get("Asia").get("Hong Kong").get(String(yesterday.toISOString().split('T')[0]))
+var land, countries, currentCountry;
 
-        console.log(result[0]['total_deaths'])
+var autorotate, now, diff, rotation;
 
+var lastTime = d3.now();
 
-        mapIterator(entries);
-        console.log(deaths)
-        //https://stackoverflow.com/questions/48707227/how-to-filter-a-javascript-map
-        const max = new Map([...deaths].filter(([k,v]) => !isNaN(v) ));
-
-        domain = [0,(Math.max(...max.values()))]
-        
-        var root = d3.hierarchy(entries)
-
-        console.log(domain)
-
-        // console.log(root.children[0].children[0].children[0].children[0].data["total_cases"]);
-        // console.log(root.children[0].children[0].children[0].children[0].data["date"]);
-        // console.log(root.children[0].children.length);
-
-        //iterator(root);
-    
-        // Hierarchy height is 4 so to access lowest level data will need 4 children (children[0].children[0].children[0].children[0])
-        // if date = latest date then store the results or whack it straight into d3
-        //root.each(d => console.log(d.data[0]));
-         // will need to provide a better colour scale
-         var colorScale = d3.scaleLinear().domain(domain).range(["green", "red"])
-
-
-        // https://www.d3-graph-gallery.com/graph/backgroundmap_basic.html
-        d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(data => {
-
-            // Draw the map
-            svg.append("g")
-                .selectAll("path")
-                .data(data.features)
-                .join('path')
-                .attr("fill", "#69b3a2")
-                .attr("d", d3.geoPath()
-                .projection(projection)
-                )
-                .attr("fill", function (d) {
-                    d.total = deaths.get(d.properties.name) || 0;
-                    console.log(colorScale(d.total))
-                    return colorScale(d.total);
-                    })
-                .style("opacity", .7)
-                .style("stroke", "#fff")
-        });
-
-    });
-
-    // function removeUndefined(data, column) {
-    //     Object.keys(data).forEach(key => data[key] === undefined ? delete obj[key] : {});
-    // }
-
-
-
-
-   
-
-
-    function iterator (root) {
-        for (var i = 0; i < root.children.length; i++) {
-            for (var j = 0; j < root.children[i].children.length; j++) {
-                for (var k = 0; k < root.children[i].children[j].children.length; k++) {
-                    if (root.children[i].children[j].children[k].children[0].data["total_cases"] !== undefined) {
-                        console.log(k)
-                    }
-
-
-
-                    // try {
-                    //     ;
-                    // } catch (e) {
-                    //     console.log("errork")
-                    //     continue;
-                    // }
-            }
-        }
-    }
+function update() {
+  context.clearRect(0, 0, 800, 600);
+    fill({type: 'Sphere'}, '#fff')
+    stroke(graticule, '#ccc')
+    fill(land, '#111')
+  if (currentCountry) {
+    fill(currentCountry, '#a00')
+  }
 }
+
+function fill(obj, color) {
+    context.beginPath()
+    geoGenerator(obj)
+    context.fillStyle = color
+    context.fill()
+  }
+
+  function stroke(obj, color) {
+    context.beginPath()
+    geoGenerator(obj)
+    context.strokeStyle = color
+    context.stroke()
+  }
+
+  function loadData(cb) {
+    d3.json('https://unpkg.com/world-atlas@1/world/110m.json').then(function(world) {
+      d3.tsv('https://gist.githubusercontent.com/mbostock/4090846/raw/07e73f3c2d21558489604a0bc434b3a5cf41a867/world-country-names.tsv').then(function(countries) {
+        cb(world, countries)
+      })
+    })
+  }
+
+
+
+var deaths = new Map(),
+domain = [],
+colorScale;
+
+// reading the csv file
+d3.csv(dataset).then(function(data) {
+
+    // https://observablehq.com/@d3/d3-group-d3-hierarchy
+    // https://observablehq.com/@d3/d3-hierarchy
+    var entries = d3.group(data, d => d.continent, d => d.location, d => d.date)
+
+    mapIterator(entries);
+});
 
 var q = new Date();
 const yesterday = new Date(q)
-yesterday.setDate(yesterday.getDate() - 1)
-
-// // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from
-// function mapIterator (map) {
-//     Array.from(map, ([key, value]) => { 
-//         if(key == "Asia") {
-//             Array.from(value, ([key, kk]) => {
-//                 if(key == "Hong Kong") {
-//                     Array.from(kk, ([key, poo]) => {
-//                         if(key == String(yesterday.toISOString().split('T')[0])) {
-//                             console.log(poo[0]['total_deaths'])
-//                                         }
-//                                 })
-//                             }
-//                             })
-//                         }
-//                     })
-//                 };
-
-
+yesterday.setDate(yesterday.getDate() - 1);
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from
 function mapIterator (map) {
-    Array.from(map, ([key1, value]) => { 
-        if(key1 != "") {
-            Array.from(value, ([key2, kk]) => {
-                    Array.from(kk, ([key3, poo]) => {
-                        if(key3 == String(yesterday.toISOString().split('T')[0])) {
-                            // console.log(poo[0]['total_deaths'])
-                            // console.log(key2)
-                            deaths.set(key2, parseInt(poo[0]['total_deaths']) )
-                                        }
-                                })
-                            }
-                    )
-                }
-            })
-        };
+Array.from(map, ([key1, value]) => { 
+    if(key1 != "") {
+        Array.from(value, ([key2, kk]) => {
+                Array.from(kk, ([key3, poo]) => {
+                    if(key3 == String(yesterday.toISOString().split('T')[0])) {
+                        // console.log(poo[0]['total_deaths'])
+                        // console.log(key2)
+                        deaths.set(key2, parseInt(poo[0]['total_deaths']) )
+                                    }
+                            })
+                        }
+                )
+            }
+        })
 
+    //https://stackoverflow.com/questions/48707227/how-to-filter-a-javascript-map
+    const max = new Map([...deaths].filter(([k,v]) => !isNaN(v) ));
 
-var result = entries.get("Asia").get("Hong Kong").get(String(yesterday.toISOString().split('T')[0]))
+    domain = [0,(Math.max(...max.values()))]
 
-//console.log(result[0]['total_deaths'])
+    colorScale = d3.scaleLinear().domain(domain).range(["green", "red"])
+    };
+
+function enter(country) {
+    var country = countryList.find(function(c) {
+        return parseInt(c.id, 10) === parseInt(country.id, 10)
+    })
+    current.text(country && country.name || '')
+    };
     
+function leave(country) {
+    current.text('')
+    };
 
+function rotate(elapsed) {
+    now = d3.now()
+    diff = now - lastTime
+    if (diff < elapsed) {
+        rotation = projection.rotate()
+        rotation[0] += diff * degPerMs
+        projection.rotate(rotation)
+        update()
+    }
+    lastTime = now
+    }
+
+function startRotation(delay) {
+    autorotate.restart(rotate, delay || 0)
+}
+
+function stopRotation() {
+    autorotate.stop()
+}
+      
+
+function dragstarted(event) {
+    v0 = versor.cartesian(projection.invert(event))
+    r0 = projection.rotate()
+    q0 = versor(r0)
+    stopRotation()
+    };
     
+function dragged(event) {
+    var v1 = versor.cartesian(projection.rotate(r0).invert(event))
+    var q1 = versor.multiply(q0, versor.delta(v0, v1))
+    var r1 = versor.rotation(q1)
+    projection.rotate(r1)
+    update()
+    }
+    
+function dragended() {
+    startRotation(rotationDelay)
+    };
 
-//     // const apples = [5345, 2879, 1997, 2437, 4045],
-//     //     oranges = [1234, 912, 923, 8123, 3479];
+// https://github.com/d3/d3-polygon
+function polygonContains(polygon, point) {
+    var n = polygon.length
+    var p = polygon[n - 1]
+    var x = point[0], y = point[1]
+    var x0 = p[0], y0 = p[1]
+    var x1, y1
+    var inside = false
+    for (var i = 0; i < n; ++i) {
+      p = polygon[i], x1 = p[0], y1 = p[1]
+      if (((y1 > y) !== (y0 > y)) && (x < (x0 - x1) * (y - y1) / (y0 - y1) + x1)) inside = !inside
+      x0 = x1, y0 = y1
+    }
+    return inside
+  }
+ 
+function mousemove(event) {
+    var c = getCountry(event)
+    if (!c) {
+      if (currentCountry) {
+        leave(currentCountry)
+        currentCountry = undefined
+        update()
+      }
+      return
+    }
+    if (c === currentCountry) {
+      return
+    }
+    currentCountry = c
+    update()
+    enter(c)
+  }
 
-//     // var width = 460,
-//     //     height = 300,
-//     //     radius = Math.min(width, height) / 2;
+  function getCountry(event) {
+    var pos = projection.invert(event)
+    return countries.features.find(function(f) {
+      return f.geometry.coordinates.find(function(c1) {
+        return polygonContains(c1, pos) || c1.find(function(c2) {
+          return polygonContains(c2, pos)
+        })
+      })
+    })
+  }
 
-//     // var color = d3.scaleOrdinal()
-//     //                 .range(d3.schemeSet3);
 
-//     // var arc = d3.arc()
-//     //             .innerRadius(radius 100)
-//     //             .outerRadius(radius - 50);
+canvas.call(d3.drag()
+    .on('start',  e => dragstarted(d3.pointer(e)) )
+    .on('drag', e => dragged(d3.pointer(e)))
+    .on('end', dragended)
+   )
+  .on('mousemove', e => mousemove(d3.pointer(e)) )
+  .data(deaths)
 
-//     // var svg = d3.select("#container")
-//     //             .append("svg")
-//     //             .attr("width", width)
-//     //             .attr("height", height)
-//     //             .append("g")
-//     //             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+loadData(function(world, cList) {
 
-//     // // A function that create / update the plot for a given dataset
-//     // const pieChart = data => {
+    land = topojson.feature(world, world.objects.land)
+    countries = topojson.feature(world, world.objects.countries)
 
-//     //     var pie = d3.pie()
-//     //             .value(function(d) {return d; })
-//     //             .sort(function(a, b) {
-//     //                 return d3.ascending(a, b);
-//     //                 } ) // This make sure that group order remains the same in the pie chart
-  
-//     //     var data_ready = pie(data)
+    // console.log( topojson.object(world, world.objects.countries).geometries)
 
-//     //     var update = svg.selectAll("path")
-//     //                         .data(data_ready); 
+    countryList = cList
 
-//     //     update.enter()
-//     //             .append("path")
-//     //             .merge(update)
-//     //             .transition()
-//     //             .duration(5000)
-//     //             .attr("d", arc)
-//     //             .attr("fill", function(d, i) { 
-//     //                 return color(i); 
-//     //             });
-
-//     //     update.exit()
-//     //             .remove()
+    window.setInterval(update, 50);
+    autorotate = d3.timer(rotate)
+    })
