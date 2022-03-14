@@ -2,18 +2,24 @@ html, body {
     margin: 0;
     padding: 0;
     background: #555;
+    font-family: sans-serif;
   }
   
   #globe {
     cursor: move;
-    margin-left: 25%
+    margin-right: 25%;
+    margin-top: 3%;
   }
   
   #current {
     position: absolute;
     color: white;
-    font-family: sans-serif;
     margin-left: 4%;
-    margin-top: 4%;
+  }
+
+  header {
+    text-align: center;
+    font-size: 40px;
+
   }
   
