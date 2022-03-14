@@ -19,16 +19,22 @@
     </header>
 </head>
 
-
-
 <body>
     <div class = "dashboard">
-        <h2 id="current"></h2>
-        <canvas id="globe"></canvas>
         <script type = "text/javascript" src="./COVID Dataset.js"></script>
-        <button onclick="update(data1,colours[0])">Variable 1</button>
-        <button onclick="update(data2, colours[1])">Variable 2</button>
-        <button onclick="update(data3, colours[2])">Variable 3</button>
+        <div class = "map">
+            <h2 id="current"></h2>
+            <canvas id="globe"></canvas>
+            <script type = "text/javascript" src="./Map.js"></script>
+        </div>
+        <div id="my_dataviz">
+            <script type = "text/javascript" src="./Line Graph.js"></script>
+        </div>
+        <div class = "buttonContainer">
+            <button onclick="update(data1,colours[0])">Variable 1</button>
+            <button onclick="update(data2, colours[1])">Variable 2</button>
+            <button onclick="update(data3, colours[2])">Variable 3</button>
+        </div>
     </div>
 </body>
 

@@ -4,29 +4,38 @@
 
 header {
   text-align: center;
-  font-size: 40px;
+  font-size: 30px;
+}
+
+body {
+  overflow: hidden;
 }
 
 .dashboard {
+  
     margin: 0;
     padding: 0;
     background: rgb(163, 163, 163);
     display: flex;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    height: 600px;
   }
   
 #globe {
   cursor: move;
-  margin-right: 25%;
   margin-top: 3%;
 }
   
 #current {
   position: absolute;
   color: white;
-  margin-left: 4%;
+  margin-left: 2%;
 }
 
 button {
+  flex-grow: 1;
+  flex-shrink: 0;
   border: 1px solid green;
   background-color: #15ac15;
   font-size: 13px;
@@ -35,10 +44,16 @@ button {
   border-radius: 5px;
   transition-duration: 0.4s;
   height: 30px;
-  width: 100px;
+  min-width: 100px;
   margin:5px;
 }
 
 button:hover {
   background-color: #871c91;
+}
+
+.my_dataviz {
+  flex-grow: 1;
+  flex-shrink: 0;
+  position: fixed;
 }

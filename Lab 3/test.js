@@ -1,27 +1,4 @@
 
-    // importing the csv file
-    let dataset = 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv';
-
- 
-
-    var margin = {top: 20, right: 10, bottom: 40, left: 100},
-    width = 800 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
-
-    // Have to use a SVG rather than a canvas as the latter does not support event handling
-    var svg = d3.select("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform",
-                        "translate(" + margin.left + "," + margin.top + ")");
-    
-    var projection = d3.geoNaturalEarth1()
-                        .scale(width / 1.5 / Math.PI)
-                        .translate([width / 2, height / 1.4])
-    
-    // will need to get the max value when values have been pushed to the data structure
-
 
     var deaths = new Map();
     var domain = []
@@ -70,22 +47,7 @@
         // https://www.d3-graph-gallery.com/graph/backgroundmap_basic.html
         d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(data => {
 
-            // Draw the map
-            svg.append("g")
-                .selectAll("path")
-                .data(data.features)
-                .join('path')
-                .attr("fill", "#69b3a2")
-                .attr("d", d3.geoPath()
-                .projection(projection)
-                )
-                .attr("fill", function (d) {
-                    d.total = deaths.get(d.properties.name) || 0;
-                    console.log(colorScale(d.total))
-                    return colorScale(d.total);
-                    })
-                .style("opacity", .7)
-                .style("stroke", "#fff")
+
         });
 
     });
