@@ -3,7 +3,7 @@ let dataset = 'https://raw.githubusercontent.com/owid/covid-19-data/master/publi
 
 var margin = {top: 20, right: 10, bottom: 40, left: 100},
 width = 800 - margin.left - margin.right,
-height = 800 - margin.top - margin.bottom;
+height = 500 - margin.top - margin.bottom;
 
 var current = d3.select('#current');
 
@@ -222,6 +222,7 @@ function mousemove(event) {
     var total
     var country
     
+    // https://stackoverflow.com/questions/14379274/how-to-iterate-over-a-javascript-object
     for (let key in countryList) {
         total = deaths.get(countryList[key].name) || 0;
         if (parseInt(countryList[key].id) < 0) {
