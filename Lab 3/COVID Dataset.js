@@ -38,10 +38,14 @@ var autorotate, now, diff, rotation;
 var lastTime = d3.now();
 
 function update() {
+
   context.clearRect(0, 0, 800, 600);
-    fill({type: 'Sphere'}, '#fff')
+    fill({type: 'Sphere'}, '#00BFFF')
     stroke(graticule, '#ccc')
     fill(land, '#111')
+  
+  attachData();
+
   if (currentCountry) {
     fill(currentCountry, '#a00')
   }
@@ -200,7 +204,10 @@ function mousemove(event) {
   }
 
   function getCountry(event) {
+    // Mouse coordinates inverted
     var pos = projection.invert(event)
+
+    
     return countries.features.find(function(f) {
       return f.geometry.coordinates.find(function(c1) {
         return polygonContains(c1, pos) || c1.find(function(c2) {
@@ -210,7 +217,31 @@ function mousemove(event) {
     })
   }
 
+  function attachData() {
+    var ID
+    var total
+    var country
+    
+    for (let key in countryList) {
+        total = deaths.get(countryList[key].name) || 0;
+        if (parseInt(countryList[key].id) < 0) {
+          ID = countryList[key].id.replace('-','-00');
+        } else if (parseInt(countryList[key].id) > 0 && parseInt(countryList[key].id) < 10) {
+          ID = "00" + countryList[key].id;
+        } else if (parseInt(countryList[key].id) >= 10 && parseInt(countryList[key].id) < 100) {
+          ID = "0" + countryList[key].id;
+        } else {
+          ID = countryList[key].id
+        }
 
+        country = countries.features.find(o => o.id === ID)
+
+        if (country != undefined) {          
+          fill(country, colorScale(total))
+        }
+      }
+    };
+          
 canvas.call(d3.drag()
     .on('start',  e => dragstarted(d3.pointer(e)) )
     .on('drag', e => dragged(d3.pointer(e)))
@@ -223,9 +254,6 @@ loadData(function(world, cList) {
 
     land = topojson.feature(world, world.objects.land)
     countries = topojson.feature(world, world.objects.countries)
-
-    // console.log( topojson.object(world, world.objects.countries).geometries)
-
     countryList = cList
 
     window.setInterval(update, 50);
