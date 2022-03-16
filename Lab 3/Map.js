@@ -1,5 +1,5 @@
 var margin = {top: 20, right: 10, bottom: 40, left: 100},
-width = 700 - margin.left - margin.right,
+width = 750 - margin.left - margin.right,
 height = 500 - margin.top - margin.bottom;
 
 var current = d3.select('#current');

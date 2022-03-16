@@ -2,9 +2,13 @@
 let dataset = 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv';
 
 var covidData,
+selection,
 entries,
 domain = [],
 colorScale;
+
+const death_columns = ["continent",	"location",	"date", "total_deaths"];
+const cases_columns = ["continent",	"location",	"date", "total_cases"];
 
 // reading the csv file
 d3.csv(dataset).then(function(data) {
@@ -48,6 +52,7 @@ function filterData (column) {
 
 function toggleText(column) {
   var text = document.getElementById("globeTitle");
+  selection = column;
   if (column === "deaths") {
     text.textContent = "Total Deaths Per Million"
     text.style.display = "block";
@@ -59,8 +64,39 @@ function toggleText(column) {
 
 function setLineData(country) {
   if (country != undefined) {
-    entries.find
+    Array.from(entries, ([keyL1, valueL1]) => { 
+      if(keyL1 != "") {
+        Array.from(valueL1, ([keyL2, valueL2]) => {
+          if(keyL2 === country.name) {
+            loadLineGraph(filterCountryData(valueL2));
+          }
+        })
+      }
+    })
+  }
     // country = countries.features.find(o => o.id === ID)
     // var result = entries.get("Asia").get("Hong Kong").get(String(yesterday.toISOString().split('T')[0]))
+};
+
+function filterCountryData(data) {
+  var filteredMap = new Map();
+  for (let key of data.keys()) {
+    var obj = {};
+    if (selection === "deaths") {
+      death_columns.forEach(i => {
+        obj[i] = data.get(key)[0][i]
+      })
+    } else if (selection === "cases") {
+      cases_columns.forEach(i => {
+        obj[i] = data.get(key)[0][i]
+      })
+    }
+    
+    filteredMap.set(key, obj);
+    //console.log(filteredMap)
   }
+  return filteredMap;
 }
+
+
+  

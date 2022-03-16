@@ -1,28 +1,40 @@
 // append the svg object to the body of the page
 const svg = d3.select("#my_dataviz")
               .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
+                .attr("width", width)
+                .attr("height", height)
               .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
 function loadLineGraph(data) {
-  console.log(data)
 
-  // Add X axis --> it is a date format
-  const x = d3.scaleLinear()
-    .domain(d3.extent(data, function(d) { return d.year; }))
-    .range([ 0, width ]);
+    // Add X axis --> it is a date format
+    const x = d3.scaleTime()
+    .domain(d3.extent(data, function(d) {
+      return new Date(d[0]); }))
+    .range([ 0, width/1.2 ]);
   svg.append("g")
-    .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x).ticks(5));
+    .attr("transform", `translate(0, 220)`)
+    .call(d3.axisBottom(x).ticks(10).tickFormat(d3.timeFormat("%Y-%m-%d")))
+    .selectAll("text")  
+    .style("text-anchor", "end")
+    .attr("dx", "-.8em")
+    .attr("dy", ".15em")
+    .attr("transform", "rotate(-65)");
+
+
+  // var selection = document.getElementById("globeTitle").textContent;
+  // if (selection.includes("Deaths")) {
+
+
 
   // Add Y axis
   const y = d3.scaleLinear()
-    .domain([0, d3.max(lineData, function(d) { return +d.n; })])
-    .range([ height, 0 ]);
+    .domain([0, d3.max(data, function(d) { return +d[1]['total_deaths']; })])
+    .range([ height/2, 0 ]);
   svg.append("g")
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y).ticks(10))
+    .attr("transform", `translate(0, 0)`);
 
   // color palette
   const color = d3.scaleOrdinal()
@@ -30,32 +42,33 @@ function loadLineGraph(data) {
 
   // Draw the line
   svg.selectAll(".line")
-      .data(lineData)
+      .data(data)
       .join("path")
         .attr("fill", "none")
-        .attr("stroke", function(d){ return color(d[0]) })
+        //.attr("stroke", function(d){ return color(d[0]) })
         .attr("stroke-width", 1.5)
         .attr("d", function(d){
           return d3.line()
-            .x(function(d) { return x(d.year); })
-            .y(function(d) { return y(+d.n); })
+            .x(function(d) { return x(d[0]); })
+            .y(function(d) { return y(+d[1]['total_deaths']); })
             (d[1])
         })
-            // Draw the map
-            svg.append("g")
-                .selectAll("path")
-                .data(lineData)
-                .join('path')
-                .attr("fill", "#69b3a2")
-                .attr("d", d3.geoPath()
-                .projection(projection)
-                )
-                .attr("fill", function (d) {
-                    d.total = deaths.get(d.properties.name) || 0;
-                    console.log(colorScale(d.total))
-                    return colorScale(d.total);
-                    })
-                .style("opacity", .7)
-                .style("stroke", "#fff")
+            // // Draw the map
+            // svg.append("g")
+            //     .selectAll("path")
+            //     .data(lineData)
+            //     .join('path')
+            //     .attr("fill", "#69b3a2")
+            //     .attr("d", d3.geoPath()
+            //     .projection(projection)
+            //     )
+            //     .attr("fill", function (d) {
+            //         d.total = deaths.get(d.properties.name) || 0;
+            //         console.log(colorScale(d.total))
+            //         return colorScale(d.total);
+            //         })
+            //     .style("opacity", .7)
+            //     .style("stroke", "#fff")
 
                   }
+          
