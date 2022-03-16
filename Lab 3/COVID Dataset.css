@@ -7,30 +7,10 @@ header {
   font-size: 30px;
 }
 
-body {
-  overflow: hidden;
-}
-
-.dashboard {
-  
-    margin: 0;
-    padding: 0;
-    background: rgb(163, 163, 163);
-    display: flex;
-    align-content: flex-start;
-    flex-wrap: wrap;
-    height: 600px;
-  }
-  
-#globe {
-  cursor: move;
-  margin-top: 3%;
-}
-  
-#current {
-  position: absolute;
-  color: white;
-  margin-left: 2%;
+.buttonContainer {
+  position: fixed;
+  margin-left: 1%;
+  margin-top: 8px;
 }
 
 button {
@@ -47,6 +27,53 @@ button {
   min-width: 100px;
   margin:5px;
 }
+
+#globeTitle {
+  position: fixed;
+  left: 22%;
+  margin-top: -1%;
+  display: none;
+  text-align: center;
+}
+
+body {
+  overflow: hidden;
+}
+
+.dashboard {
+  position: fixed;
+    margin: 0;
+    padding: 0;
+    background: rgb(163, 163, 163);
+    display: flex;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    height: 600px;
+    width: 99%;
+  }
+  
+#globe {
+  cursor: move;
+  margin-top: 3%;
+}
+  
+#current {
+  position: absolute;
+  color: white;
+  margin-left: 2%;
+  bottom: 60px;
+}
+
+#chart {
+  position: absolute;
+  margin-top: 180px;
+  width: 200px;
+  opacity: 100%;
+  margin-left: 5%;
+  height: 300px;
+  text-align: center;
+}
+
 
 button:hover {
   background-color: #871c91;

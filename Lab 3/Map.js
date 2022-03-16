@@ -37,7 +37,7 @@ var lastTime = d3.now();
 function update() {
 
   context.clearRect(0, 0, 800, 600);
-    fill({type: 'Sphere'}, '#00BFFF')
+    fill({type: 'Sphere'}, '#F0FFFF')
     stroke(graticule, '#ccc')
     fill(land, '#111')
   
@@ -169,14 +169,16 @@ function mousemove(event) {
     })
   }
 
-  function attachData() {
+  function attachData() { 
+
+    if (covidData != undefined) {
     var ID
     var total
     var country
     
     // https://stackoverflow.com/questions/14379274/how-to-iterate-over-a-javascript-object
     for (let key in countryList) {
-        total = deaths.get(countryList[key].name) || 0;
+        total = covidData.get(countryList[key].name) || 0;
         if (parseInt(countryList[key].id) < 0) {
           ID = countryList[key].id.replace('-','-00');
         } else if (parseInt(countryList[key].id) > 0 && parseInt(countryList[key].id) < 10) {
@@ -193,7 +195,27 @@ function mousemove(event) {
           fill(country, colorScale(total))
         }
       }
-    };
+    }
+  };
+
+function legend() {
+
+  var chart = d3.select("#chart");
+
+  chart.append("g")
+      .attr("class", "legendLog")
+      .attr("transform", "translate(20,20)");
+
+  var logLegend = d3.legendColor()
+                    .shapeWidth(30)
+                    .cells(10)
+                    .orient("vertical")
+                    .scale(colorScale);
+
+  chart.select(".legendLog")
+        .call(logLegend)
+
+};
 
 function startGlobe() {
         
@@ -211,6 +233,7 @@ function startGlobe() {
       countryList = cList
 
       window.setInterval(update, 50);
-      autorotate = d3.timer(rotate)
+
+      //autorotate = d3.timer(rotate)
       })
   }
