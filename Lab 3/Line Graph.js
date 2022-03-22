@@ -9,44 +9,53 @@ const svg = d3.select("#my_dataviz")
 function loadLineGraph(data) {
 
   var parseTime = d3.timeParse("%Y-%m-%d");
-  // formatDate = d3.timeFormat("%Y-%m-%d"),
-  // bisectDate = d3.bisector(d => d.date).left,
-  // formatValue = d3.format(",.0f");
+  formatDate = d3.timeFormat("%Y-%m-%d"),
+  bisectDate = d3.bisector(d => d.date).left,
+  formatValue = d3.format(",.0f");
 
-  data.forEach(function(d) {
-		d.date = parseTime(d.date);
-    d['total_deaths'] = parseInt(d['total_deaths']) || 0
-    return d;
-	})
+  const lineData = [];
 
-
-
+  if (selection === "deaths") {
+    data.forEach(function(d) {
+      var dt = parseTime(d.date);
+      var v = parseInt(d['total_deaths']) || 0
+      lineData.push({date: dt, value: v});
+    })
+  } else if (selection === "cases") {
+    data.forEach(function(d) {
+      var dt = parseTime(d.date);
+      var v = parseInt(d['total_cases']) || 0
+      lineData.push({date: dt, value: v});
+    })
+  }
 
     // Add X axis --> it is a date format
   const x = d3.scaleTime()
               .rangeRound([0, width/1.2])
-              .domain(d3.extent(data, function(d) {
-                return d[1].date; 
+              .domain(d3.extent(lineData, function(d) {
+                return d.date; 
               }))
 
     // Add Y axis
   const y = d3.scaleLinear()
-              .rangeRound([ height/2, 0 ]);
-
+              .rangeRound([ height/2, 0 ])
+              .domain([0, d3.max(lineData, function(d) { 
+                return d.value; 
+              })])
+              .nice();
 
   svg.append("g")
+    .attr("class", "x-axis")
     .attr("transform", `translate(0, 220)`)
-    .call(d3.axisBottom(x)
-            .tickFormat(d3.timeFormat("%Y-%m")))
-    .selectAll("text")  
-    .style("text-anchor", "end")
-    .attr("dx", "-.8em")
-    .attr("dy", ".15em")
-    .attr("transform", "rotate(-65)");
 
   svg.append("g")
     .attr("class", "y-axis")
     .attr("transform", `translate(0, 0)`);
+    
+  var line = d3.line()
+    .curve(d3.curveCardinal)
+    .x(d => x(d.date))
+    .y(d => y(d.value));
 
   var focus = svg.append("g")
 		.attr("class", "focus")
@@ -65,101 +74,107 @@ function loadLineGraph(data) {
 		.attr("text-anchor", "middle")
 		.attr("font-size", 12);
 
-  // var overlay = svg.append("rect")
-	// 	.attr("class", "overlay")
-	// 	.attr("x", margin.left)
-	// 	.attr("width", width - margin.right - margin.left)
-	// 	.attr("height", height)
+  var overlay = svg.append("rect")
+		.attr("class", "overlay")
+		.attr("x", margin.left)
+		.attr("width", width - margin.right - margin.left)
+		.attr("height", height)
 
-
-  // for (let key of data.keys()) {
-  //   if (data.get(key)['total_deaths'] == NaN) {
-      
-  //   console.log(data.get(key)['total_deaths'])}
-  //   }
-
-  var line = d3.line()
-  .curve(d3.curveCardinal)
-  .x(d => x(d.date))
-  .y(d => y(d["total_deaths"])
-  );
-
-  
-
-  var country = svg.selectAll(".country")
-                    .data(data);
-
-  y.domain([0, d3.max(data, function(d) { 
-    return d[1]['total_deaths']; 
-  })])
-      
-                    
-  country.enter().insert("g", ".focus").append("path")
-  .attr("class", "line country")
-  .style("stroke", "red")
-  .merge(country)
-  .transition().duration(1000)
-  .attr("d", d => line(d));
-
-		//country.exit().remove();
-
-  if (selection === "deaths") {
-
-
-  } else if (selection === "cases") {
-    y.domain([0, d3.max(data, function(d) { 
-                return d[1]['total_cases']; 
-              })])
-    .nice();
-  }
+  svg.selectAll(".x-axis")
+      .transition()
+      .duration(1000)
+      .call(d3.axisBottom(x)
+              .tickFormat(d3.timeFormat("%Y-%m")))
+      .selectAll("text")  
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-65)");
 
   svg.selectAll(".y-axis")
       .transition()
       .duration(1000)
       .call(d3.axisLeft(y).tickSize(-width + margin.right + margin.left))
 
+  var country = svg.selectAll(".country")
+                    .data([lineData]);
 
+	country.exit().remove();
 
-		//tooltip(copy);
+  country.enter().insert("g", ".focus").append("path")
+          .attr("class", "line country")
+          .style("stroke", "red")
+          .merge(country)
+          .transition().duration(1000)
+          .attr("d", d=> line(d));
 
+//	tooltip(lineData);
 
-  // var selection = document.getElementById("globeTitle").textContent;
-  // if (selection.includes("Deaths")) {
+// function tooltip (data) {
 
+//   var labels = focus.selectAll(".lineHoverText")
+//                     .data([data])
 
-  // color palette
-  const color = d3.scaleOrdinal()
-                  .range(d3.schemeCategory10)
+//   labels.enter().append("text")
+//     .attr("class", "lineHoverText")
+//     // .style("fill", "black")
+//     .attr("text-anchor", "start")
+//     .attr("font-size",12)
+//     .attr("dy", (_, i) => 1 + i * 2 + "em")
+//     .merge(labels);
 
-  // // Draw the line
-  // svg.selectAll(".line")
-  //     .data(data)
-  //     .join("path")
-  //       .attr("fill", "none")
-  //       .attr("stroke", "red")
-  //       .attr("stroke-width", 1.5)
-  //       .attr("d", function(d){
-  //         return d3.line()
-  //           .x(function(d) { return x(new Date(d[0])); })
-  //           .y(function(d) { return y(+d[1]['total_deaths']); })
-  //           (d[1])
-  //       })
-            // // Draw the map
-            // svg.append("g")
-            //     .selectAll("path")
-            //     .data(lineData)
-            //     .join('path')
-            //     .attr("fill", "#69b3a2")
-            //     .attr("d", d3.geoPath()
-            //     .projection(projection)
-            //     )
-            //     .attr("fill", function (d) {
-            //         d.total = deaths.get(d.properties.name) || 0;
-            //         console.log(colorScale(d.total))
-            //         return colorScale(d.total);
-            //         })
-            //     .style("opacity", .7)
-            //     .style("stroke", "#fff")
+//   var circles = focus.selectAll(".hoverCircle")
+//     .data([data])
 
-                  }
+//   circles.enter().append("circle")
+//     .attr("class", "hoverCircle")
+//     // .style("fill", d => z(d))
+//     .attr("r", 2.5)
+//     .merge(circles);
+
+//   svg.selectAll(".overlay")
+//     .on("mouseover", function() { focus.style("display", null); })
+//     .on("mouseout", function() { focus.style("display", "none"); })
+//     .on("mousemove", e => lineMouseMove(d3.pointer(e)));
+// }
+
+// function lineMouseMove(event) {
+
+//   console.log(d3.pointer(this))
+//   const mouseover = (event, d) => {
+//     tooltip.style("opacity", 1);
+//   };
+
+//   var x0 = x.invert(d3.pointer(this)[0]),
+//     i = bisectDate(data, x0, 1),
+//     d0 = data[i - 1],
+//     d1 = data[i],
+//     d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+
+//   focus.select(".lineHover")
+//     .attr("transform", "translate(" + x(d.date) + "," + height + ")");
+
+//   focus.select(".lineHoverDate")
+//     .attr("transform", 
+//       "translate(" + x(d.date) + "," + (height + margin.bottom) + ")")
+//     .text(formatDate(d.date));
+
+//   focus.selectAll(".hoverCircle")
+//     .attr("cy", e => y(d[e]))
+//     .attr("cx", x(d.date));
+
+//   focus.selectAll(".lineHoverText")
+//     .attr("transform", 
+//       "translate(" + (x(d.date)) + "," + height / 2.5 + ")")
+//     .text(e => e + " " + "º" + formatValue(d[e]));
+
+//   x(d.date) > (width - width / 4) 
+//     ? focus.selectAll("text.lineHoverText")
+//       .attr("text-anchor", "end")
+//       .attr("dx", -10)
+//     : focus.selectAll("text.lineHoverText")
+//       .attr("text-anchor", "start")
+//       .attr("dx", 10)
+// }
+}
           

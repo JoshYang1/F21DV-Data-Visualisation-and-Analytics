@@ -37,9 +37,10 @@ var lastTime = d3.now();
 function update() {
 
   context.clearRect(0, 0, 800, 600);
-    fill({type: 'Sphere'}, '#F0FFFF')
-    stroke(graticule, '#ccc')
-    fill(land, '#111')
+
+  fill({type: 'Sphere'}, '#F0FFFF')
+  stroke(graticule, '#ccc')
+  fill(land, '#111')
   
   attachData();
 
@@ -70,13 +71,13 @@ function fill(obj, color) {
     })
   }
 
-  function enter(country) {
-    var country = countryList.find(function(c) {
-        return parseInt(c.id, 10) === parseInt(country.id, 10)
-    })
-    current.text(country && country.name || '')
-    setLineData(country)
-    };
+function enter(country) {
+  var country = countryList.find(function(c) {
+      return parseInt(c.id, 10) === parseInt(country.id, 10)
+  })
+  current.text(country && country.name || '')
+  setLineData(country)
+  };
     
 function leave(country) {
     current.text('')
@@ -234,6 +235,6 @@ function startGlobe() {
 
       window.setInterval(update, 50);
 
-      //autorotate = d3.timer(rotate)
+      autorotate = d3.timer(rotate)
       })
   }

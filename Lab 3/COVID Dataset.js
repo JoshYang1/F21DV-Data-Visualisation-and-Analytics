@@ -27,12 +27,12 @@ yesterday.setDate(yesterday.getDate() - 1);
 
 function filterData (column) {
   covidData = new Map();
-  Array.from(entries, ([key1, value]) => { 
+  Array.from(entries, ([key1, v1]) => { 
     if(key1 != "") {
-        Array.from(value, ([key2, kk]) => {
-                Array.from(kk, ([key3, poo]) => {
+        Array.from(v1, ([key2, v2]) => {
+                Array.from(v2, ([key3, v3]) => {
                     if(key3 == String(yesterday.toISOString().split('T')[0])) {
-                        covidData.set(key2, parseInt(poo[0][column]) )
+                        covidData.set(key2, parseInt(v3[0][column]) )
                                     }
                             })
                         }
@@ -74,8 +74,6 @@ function setLineData(country) {
       }
     })
   }
-    // country = countries.features.find(o => o.id === ID)
-    // var result = entries.get("Asia").get("Hong Kong").get(String(yesterday.toISOString().split('T')[0]))
 };
 
 function filterCountryData(data) {
@@ -93,7 +91,6 @@ function filterCountryData(data) {
     }
     
     filteredMap.set(key, obj);
-    //console.log(filteredMap)
   }
   return filteredMap;
 }
