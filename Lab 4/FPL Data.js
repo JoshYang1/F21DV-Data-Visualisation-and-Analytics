@@ -3,10 +3,14 @@ const spreadsheet = "1_rkHKgIPt3i_2uKr8kh5u4WZaYOLccNiiTx1xAaAo_Y";
 const tab = 'Data';
 const endpoint1 = `${googleAPI}${spreadsheet}/${tab}`;
 
+var fplData;
+
+//https://benborgers.com/posts/google-sheets-json
 fetch(endpoint1)
     .then((res) => res.json())
     .then((data) => {
-        console.log(data)
+        fplData = data
+
       data.forEach((row) => {
 
       });
