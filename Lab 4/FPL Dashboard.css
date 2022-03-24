@@ -2,12 +2,25 @@
     font-family: sans-serif;
   }
   
+ html, body {
+     height: 100%;
+     width: 100%;
+     margin: 0;
+     padding: 0;
+  }
+
   header {
     text-align: center;
     font-size: 30px;
     margin-top: 20px;
+    width: 100%;
   }
   
-  scatterplot {
-      
+  #scatterPlot {
+    position: relative;
+    width: 460px;
+    height: 400px;
+    background-color: red;
+    top: 20px;
+    left: 20px;
   }
