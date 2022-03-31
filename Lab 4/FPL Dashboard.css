@@ -1,39 +1,74 @@
 * {
     font-family: sans-serif;
-  }
+}
   
- html, body {
-     height: 100%;
-     width: 100%;
-     margin: 0;
-     padding: 0;
-  }
-
-  header {
-    text-align: center;
-    font-size: 30px;
-    margin-top: 20px;
+html, body {
+    height: 100%;
     width: 100%;
-  }
-  
-  #scatterPlot {
-    position: relative;
-    width: 1000px;
-    height: 470px;
-    background-color: lightgray;
-    top: 20px;
-    left: 20px;
-  }
+    margin: 0;
+    padding: 0;
+}
 
-  div.tooltip {
-    position: absolute;
-    text-align: left;
-    font: 12px sans-serif;
-    border-radius: 8px;
-    padding: 10px;
-    pointer-events: none;
-  }
+header {
+  text-align: center;
+  font-size: 30px;
+  margin-top: 20px;
+  width: 100%;
+}
 
-  .colorLegend {
-    font: 12px sans-serif;
-  }
+#container {
+  top: 20px;
+  position: relative;
+  width: 100%;
+  height: 500px;
+  padding: 0;
+  margin: 0;
+  background-color: purple;
+}
+
+#scatterPlot {
+  position: relative;
+  width: 1000px;
+  height: 470px;
+  background-color: lightgray;
+  top: 15px;
+  left: 20px;
+  display: inline-block;
+  float: left;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: left;
+  font: 12px sans-serif;
+  border-radius: 8px;
+  padding: 10px;
+  pointer-events: none;
+}
+
+.colorLegend {
+  font: 12px sans-serif;
+}
+
+#barContainer {
+  position: relative;
+  width: 360px;
+  height: 470px;
+  top: 15px;
+  right: 20px;
+  background-color: lightgray;
+  display: inline-block;
+  float: right;
+  text-align: center;
+}
+
+#FWDBar, #GKBar, #MIDBar, #DEFBar {
+  position: relative;
+  width: 97%;
+  height: 22%;
+  left: 1.5%;
+  margin-top: 2%;
+  background-color: black;
+}
+
+

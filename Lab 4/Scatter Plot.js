@@ -14,8 +14,6 @@ fplData.then(function(data) {
 
     const scatterData = [];
 
-    console.log(data)
-    
     data.forEach(function(d) {
         var cost = (parseInt(d["Cost Today"]) / 10) || 0;
         var ict = parseFloat(d["ICT Index"]) || 0;
@@ -130,7 +128,7 @@ fplData.then(function(data) {
                 return(i*3)
             })
         .duration(2000)
-        .style("opacity", 0.7);
+        .style("opacity", 0.8);
     
     // https://bl.ocks.org/d3noob/97e51c5be17291f79a27705cef827da2
     dots.on("mouseover", function(event,d) {
@@ -140,7 +138,7 @@ fplData.then(function(data) {
 
             tooltip.html("Player: " + d.name + "<br>"  + "Total Points: " + d.totalPoints + "<br>" + "ICT per cost: " + d.ictCost.toFixed(2))
               .style("left", (event.x) + "px")
-              .style("top", (event.y) + "px")
+              .style("top", (event.y -50) + "px")
               .style("background", colorScale(d.position));
             })
             .on("mouseout", function(d) {
