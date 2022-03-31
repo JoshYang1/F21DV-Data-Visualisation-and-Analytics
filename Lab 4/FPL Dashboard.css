@@ -18,9 +18,9 @@
   
   #scatterPlot {
     position: relative;
-    width: 460px;
-    height: 400px;
-    background-color: red;
+    width: 1000px;
+    height: 470px;
+    background-color: lightgray;
     top: 20px;
     left: 20px;
   }

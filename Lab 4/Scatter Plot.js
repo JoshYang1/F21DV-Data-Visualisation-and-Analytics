@@ -13,63 +13,81 @@ const svg = d3.select("#scatterPlot")
 fplData.then(function(data) {
 
     const scatterData = [];
-    
+
+    console.log(data)
     
     data.forEach(function(d) {
         var cost = (parseInt(d["Cost Today"]) / 10) || 0;
         var ict = parseFloat(d["ICT Index"]) || 0;
-        scatterData.push({cost: cost, ict: ict});
-    })
+        var ictCost = ict / cost;
 
-    console.log(scatterData)
+        var totalPoints = parseInt(d["Total Points"]) || 0;
+
+        var position = parseInt(d["Position"])
+
+        scatterData.push({totalPoints: totalPoints, ictCost: ictCost, position: position});
+    })
 
     // Add X axis
     var x = d3.scaleLinear()
                 .rangeRound([0, width/1.2])
-                .domain(d3.extent(scatterData, function(d) {
-                return d.ict; 
-                }))
-
-                .domain([0, 0])
-                .range([ 0, width]);
-
-    svg.append("g")
-        .attr("class", "myXaxis")   // Note that here we give a class to the X axis, to be able to call it later and modify it
-        .attr("transform", "translate(0,0)")
-        .call(d3.axisBottom(x))
-        .attr("opacity", "0")
+                .domain([0, d3.max(scatterData, function(d)  {
+                    return d.ictCost; 
+                })])
+                .nice();
 
     // Add Y axis
     var y = d3.scaleLinear()
-        .domain([0, 500000])
-        .range([ height, 0]);
+                .domain([0, d3.max(scatterData, function(d) {
+                    return d.totalPoints;
+                })])
+                .range([height / 1.1, 0])
+                .nice();
 
     svg.append("g")
-        .call(d3.axisLeft(y));
+        .attr("class", "myXaxis")   // Note that here we give a class to the X axis, to be able to call it later and modify it
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .attr("opacity", "0")
+
+    svg.append("g")
+        .attr("class", "myYaxis")   // Note that here we give a class to the X axis, to be able to call it later and modify it
+        .attr("opacity", "0")
 
     // Add dots
     svg.append('g')
         .selectAll("dot")
-        .data([scatterData])
+        .data(scatterData)
         .enter()
         .append("circle")
-        .attr("cx", function (d) { return x(d.ict); } )
-        .attr("cy", function (d) { return y(d.cost); } )
-        .attr("r", 1.5)
-        .style("fill", "#69b3a2")
+        .transition()
+        .delay(function(d,i) {
+                return(i*3)
+            })
+        .duration(2000)
+        .attr("cx", function (d) { return x(d.ictCost); } )
+        .attr("cy", function (d) { return y(d.totalPoints); } )
+        .attr("r", 2.5)
+        .style("fill", function (d) {
+            if (d.position === 1) {
+                return "blue"
+            } else if (d.position === 2) {
+                return "red"
+            } else if (d.position === 3) {
+                return "green"
+            } else if (d.position === 4) {
+                return "#FF6EC7"
+            }
+        });
 
-    // new X axis
-    x.domain([0, 4000])
     svg.select(".myXaxis")
-    .transition()
-    .duration(2000)
-    .attr("opacity", "1")
-    .call(d3.axisBottom(x));
-
-    svg.selectAll("circle")
-    .transition()
-    .delay(function(d,i){return(i*3)})
-    .duration(2000)
-    .attr("cx", function (d) { return x(d.ict); } )
-    .attr("cy", function (d) { return y(d.cost); } )
+        .transition()
+        .duration(2000)
+        .attr("opacity", "1")
+        .call(d3.axisBottom(x));
+    
+    svg.select(".myYaxis")
+        .transition()
+        .duration(2000)
+        .attr("opacity", "1")
+        .call(d3.axisLeft(y));
 })
