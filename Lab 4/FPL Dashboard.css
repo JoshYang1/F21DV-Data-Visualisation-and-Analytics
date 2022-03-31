@@ -24,3 +24,16 @@
     top: 20px;
     left: 20px;
   }
+
+  div.tooltip {
+    position: absolute;
+    text-align: left;
+    font: 12px sans-serif;
+    border-radius: 8px;
+    padding: 10px;
+    pointer-events: none;
+  }
+
+  .colorLegend {
+    font: 12px sans-serif;
+  }
