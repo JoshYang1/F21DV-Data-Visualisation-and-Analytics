@@ -5,10 +5,10 @@ const bmargin = {top: 10, right: 130, bottom: 78, left: 80};
 
 const bsvg = d3.select("#GKBar")
                 .append("svg")
-                .attr("width", width)
-                .attr("height", height)
+                .attr("width", bwidth)
+                .attr("height", bheight)
                 .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
+                .attr("transform", `translate(${0},${0})`);
 
 transferPicks.then(function(data) {
 
@@ -44,61 +44,62 @@ transferPicks.then(function(data) {
         return result;
     }
 
-
-    console.log(top4)
-
     var x = d3.scaleLinear()
-            .range([0, width])
-            .domain([0, d3.max(data, function (d) {
-                return d.value;
-            })]);
+                .range([0, bwidth])
+                .domain([0, d3.max(top4, function (d) {
+                    return d[1]['FDIndex'];
+                })]);
 
-        var y = d3.scaleOrdinal()
-            .rangeRoundBands([height, 0], .1)
-            .domain(data.map(function (d) {
-                return d.name;
-            }));
+    var y = d3.scaleBand()
+                .rangeRound([bheight, 0])
+                .domain(top4.map(function (d) {
+                    return d[1].fName + " " + d[1].lName;
+                }))
+                .padding(0.1);
 
-        //make y axis to show bar names
-        var yAxis = d3.svg.axis()
-            .scale(y)
-            //no tick marks
-            .tickSize(0)
-            .orient("left");
-
-        var gy = svg.append("g")
-            .attr("class", "y axis")
-            .call(yAxis)
-
-        var bars = svg.selectAll(".bar")
-            .data(data)
+    console.log(x.domain())
+    console.log(top4)
+    
+    // append the rectangles for the bar chart
+    bsvg.selectAll(".bar")
+            .data(top4)
             .enter()
-            .append("g")
-
-        //append rects
-        bars.append("rect")
+            .append("rect")
             .attr("class", "bar")
-            .attr("y", function (d) {
-                return y(d.name);
-            })
-            .attr("height", y.rangeBand())
-            .attr("x", 0)
-            .attr("width", function (d) {
-                return x(d.value);
-            });
+            .attr("y", function(d) { return y(d[1].fName + " " + d[1].lName); })
+            .attr("height", y.bandwidth())
+            .attr("x", function(d) {return x(d[1]['FDIndex']); })
+            .attr("width", function(d) { return width - d[1]['FDIndex']; });
 
-        //add a value label to the right of each bar
-        bars.append("text")
-            .attr("class", "label")
-            //y position of the label is halfway down the bar
-            .attr("y", function (d) {
-                return y(d.name) + y.rangeBand() / 2 + 4;
-            })
-            //x position is 3 pixels to the right of the bar
-            .attr("x", function (d) {
-                return x(d.value) + 3;
-            })
-            .text(function (d) {
-                return d.value;
-            });
+    // add the x Axis
+    bsvg.append("g")
+        .attr("transform", "translate(0," + bheight + ")")
+        .call(d3.axisBottom(x));
+
+// add the y Axis
+    bsvg.append("g")
+        .call(d3.axisLeft(y));
+        // //make y axis to show bar names
+        // var yAxis = d3.svg.axis()
+        //     .scale(y)
+        //     //no tick marks
+        //     .tickSize(0)
+        //     .orient("left");
+
+
+
+        // //add a value label to the right of each bar
+        // bars.append("text")
+        //     .attr("class", "label")
+        //     //y position of the label is halfway down the bar
+        //     .attr("y", function (d) {
+        //         return y(d.name) + y.rangeBand() / 2 + 4;
+        //     })
+        //     //x position is 3 pixels to the right of the bar
+        //     .attr("x", function (d) {
+        //         return x(d.value) + 3;
+        //     })
+        //     .text(function (d) {
+        //         return d.value;
+        //     });
 });
