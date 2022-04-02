@@ -67,7 +67,8 @@ fplData.then(function(data) {
     var colorLegend = d3.legendColor()
                             .labelOffset(5)
                             .scale(colorScale)
-                            .shape('circle')  .labels(["GK", "MID", "FWD", "DEF"]);
+                            .shape('circle')  
+                            .labels(["GK", "MID", "FWD", "DEF"]);
 
     // Add a tooltip div. Here I define the general feature of the tooltip: stuff that do not depend on the data point.
     // Its opacity is set to 0: we don't see it by default.

@@ -62,14 +62,12 @@ div.tooltip {
   text-align: center;
 }
 
-#FWDBar, #GKBar, #MIDBar, #DEFBar {
+#BarChart {
   position: relative;
   width: 97%;
   height: 22%;
   left: 1.5%;
-  margin-top: 2%;
-  font-size: 10;
-  text-anchor: end;
+  margin-top: 7%;
 }
 
 
