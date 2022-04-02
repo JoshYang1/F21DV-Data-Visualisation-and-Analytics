@@ -7,8 +7,6 @@ const bsvg = d3.select("#GKBar")
                 .append("svg")
                 .attr("width", bwidth)
                 .attr("height", bheight)
-                .append("g")
-                .attr("transform", `translate(${0},${0})`);
 
 transferPicks.then(function(data) {
 
@@ -51,55 +49,34 @@ transferPicks.then(function(data) {
                 })]);
 
     var y = d3.scaleBand()
-                .rangeRound([bheight, 0])
+                .rangeRound([0, bheight])
                 .domain(top4.map(function (d) {
                     return d[1].fName + " " + d[1].lName;
                 }))
                 .padding(0.1);
 
-    console.log(x.domain())
-    console.log(top4)
-    
+
     // append the rectangles for the bar chart
-    bsvg.selectAll(".bar")
-            .data(top4)
-            .enter()
-            .append("rect")
-            .attr("class", "bar")
-            .attr("y", function(d) { return y(d[1].fName + " " + d[1].lName); })
-            .attr("height", y.bandwidth())
-            .attr("x", function(d) {return x(d[1]['FDIndex']); })
-            .attr("width", function(d) { return width - d[1]['FDIndex']; });
+    const bars = bsvg.selectAll(".bar")
+                    .data(top4)
+                    .enter()
+                    .append("rect")
 
-    // add the x Axis
-    bsvg.append("g")
-        .attr("transform", "translate(0," + bheight + ")")
-        .call(d3.axisBottom(x));
+    bars.attr("y", function(d) { return y(d[1].fName + " " + d[1].lName); })
+        .attr("height", y.bandwidth())
+        .attr("x", 0)
+        .attr("width", function(d) { return x(d[1]['FDIndex']); })
+        .attr("fill", "red")
+    
+    // https://riptutorial.com/d3-js/example/17339/correctly-appending-an-svg-element
+    const labels = bsvg.selectAll(".myTexts")
+                    .data(top4)
+                    .enter()
+                    .append("text");   
 
-// add the y Axis
-    bsvg.append("g")
-        .call(d3.axisLeft(y));
-        // //make y axis to show bar names
-        // var yAxis = d3.svg.axis()
-        //     .scale(y)
-        //     //no tick marks
-        //     .tickSize(0)
-        //     .orient("left");
+    labels.attr("x", function(d) { return x(d[1]['FDIndex']) - 5; })
+            .attr("y", function(d) {return y(d[1].fName + " " + d[1].lName) + 18;})
+            .text(function(d) {return d[1].fName + " " + d[1].lName + " " + d[1]['FDIndex']})
+            .attr("fill", "white");
 
-
-
-        // //add a value label to the right of each bar
-        // bars.append("text")
-        //     .attr("class", "label")
-        //     //y position of the label is halfway down the bar
-        //     .attr("y", function (d) {
-        //         return y(d.name) + y.rangeBand() / 2 + 4;
-        //     })
-        //     //x position is 3 pixels to the right of the bar
-        //     .attr("x", function (d) {
-        //         return x(d.value) + 3;
-        //     })
-        //     .text(function (d) {
-        //         return d.value;
-        //     });
 });
