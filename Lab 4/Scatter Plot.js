@@ -15,6 +15,7 @@ fplData.then(function(data) {
     const scatterData = [];
 
     data.forEach(function(d) {
+
         var cost = (parseInt(d["Cost Today"]) / 10) || 0;
         var ict = parseFloat(d["ICT Index"]) || 0;
         var ictCost = ict / cost;
@@ -23,9 +24,10 @@ fplData.then(function(data) {
 
         var position = parseInt(d["Position"])
 
-        var name = d["Last Name"]
+        var fname = d["Name"]
+        var lname = d["Last Name"]
 
-        scatterData.push({totalPoints: totalPoints, ictCost: ictCost, position: position, name: name});
+        scatterData.push({totalPoints: totalPoints, ictCost: ictCost, position: position, fname: fname, lname: lname});
     })
 
     // Add X axis
@@ -116,7 +118,7 @@ fplData.then(function(data) {
         .data(scatterData)
         .enter()
         .append("circle")
-        
+        .attr("id", function (d) { return d.fname + " " + d.lname})
         .attr("cx", function (d) { return x(d.ictCost); } )
         .attr("cy", function (d) { return y(d.totalPoints); } )
         .attr("r", 2.5)
@@ -137,7 +139,7 @@ fplData.then(function(data) {
               .duration(200)
               .style("opacity", .8)
 
-            tooltip.html("Player: " + d.name + "<br>"  + "Total Points: " + d.totalPoints + "<br>" + "ICT per cost: " + d.ictCost.toFixed(2))
+            tooltip.html("Player: " + d.lname + "<br>"  + "Total Points: " + d.totalPoints + "<br>" + "ICT per cost: " + d.ictCost.toFixed(2))
               .style("left", (event.x) + "px")
               .style("top", (event.y -50) + "px")
               .style("background", colorScale(d.position));
@@ -147,6 +149,4 @@ fplData.then(function(data) {
                   .duration(500)
                   .style("opacity", 0);
                 });
-
-
 })

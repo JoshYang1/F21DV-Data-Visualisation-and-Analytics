@@ -3,12 +3,6 @@ transferPicks.then(function(data) {
     //https://stackoverflow.com/questions/15125920/how-to-get-distinct-values-from-an-array-of-objects-in-javascript
     const unique = [...new Set(data.map(item => item.Position))];
 
-    // const colorScale = d3.scaleOrdinal()
-    //                         .domain(unique.map(function(d){
-    //                             return d;
-    //                         }))
-    //                         .range(d3.schemeCategory10);
-
     unique.forEach(function(d) {
         var positionData = data.filter(function(e) {
             return e.Position === d
@@ -24,6 +18,7 @@ function filterData(data) {
     var barData = [];
 
     data.forEach(function(d) {
+
 
         var FDIndex = parseFloat(d["FD Index"]) || 0;
 
@@ -88,6 +83,22 @@ function barChart(data, position) {
         .attr("x", 0)
         .attr("width", function(d) { return x(d[1]['FDIndex']); })
         .attr("fill", "red")
+        .on('mouseover', function() {
+            d3.select(this)
+                .attr('fill', 'orange');
+        })
+        .on('mouseout', function(d) {
+            d3.select(this)
+                .transition()
+                .duration(250)
+                .attr("fill", "red");
+        })
+        .on('click', function(event, d) {
+            d3.select(this)
+                .attr("fill", "purple");
+            
+                hoverDotSelection(d);
+        });
     
     // https://riptutorial.com/d3-js/example/17339/correctly-appending-an-svg-element
     const labels = bsvg.selectAll(".myTexts")
@@ -110,3 +121,28 @@ function barChart(data, position) {
         .text(position);  
 }
 
+// https://observablehq.com/@bumbeishvili/pulse
+function hoverDotSelection (selection) {
+
+    var playerName = selection[1].fName + " " + selection[1].lName
+    var element = document.getElementById(playerName);
+    var circle = d3.select(element);
+    
+    pulse(circle);
+
+    function pulse(circle) {
+          (function repeat() {
+             circle
+              .transition()
+              .duration(500)
+              .attr("r", 10)
+              .transition()
+              .duration(500)
+              .attr("r", 5)
+              .transition()
+              .duration(1000)
+              .ease(d3.easeSin)
+              .on("end", repeat);
+          })();
+       }
+    }
