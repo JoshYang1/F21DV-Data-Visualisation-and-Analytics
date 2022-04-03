@@ -8,20 +8,36 @@
     <meta name="author" content="Josh Yang 091514042">
     <title>FPL Dashboard</title>
     <link rel="stylesheet" href="FPL Dashboard.css">
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <script src='https://d3js.org/d3.v7.min.js'></script>
     <script src=https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js></script>
 </head>
 
 <body>
     <script src="./FPL Data.js"></script>
-    <header>Fantasy Premier League Football Dashboard</header>
+    <header>Fantasy Premier League Football Dashboard
+        <div class="info">
+            <i class="icon-info-sign"></i>
+            <span class="extra-info">
+              A little column extra info. Aaand just a little bit more
+            </span>
+        </div>
+    </header>
     <div id="container">
         <div id="scatterPlot"></div>
         <script src="./Scatter Plot.js"></script>
         <div id="barContainer">
             Top Transfer Picks (By FD Index)
+            <select id="positionDropdown" onchange="positionPick(this.value)">
+                <option value="">--Please choose a position--</option>
+                <option value="GK">GK</option>
+                <option value="DEF">DEF</option>
+                <option value="MID">MID</option>
+                <option value="FWD">FWD</option>
+            </select>
             <div id = "BarChart"></div>
-        <script src="./Bar Chart.js"></script>
+            <script src="./Bar Chart.js"></script>
         </div>
     </div>
 </body>

@@ -1,29 +1,27 @@
+var transferPickData = {};
+
 transferPicks.then(function(data) {
-    
-    //https://stackoverflow.com/questions/15125920/how-to-get-distinct-values-from-an-array-of-objects-in-javascript
-    const unique = [...new Set(data.map(item => item.Position))];
-
-    unique.forEach(function(d) {
-        var positionData = data.filter(function(e) {
-            return e.Position === d
-        })
-
-
-        const top4 = getTopValues(filterData(positionData),4)
-        barChart(top4, d);
-    })
+    transferPickData = data;
+    const top4 = getTopValues(filterData(data),10)
+    barChart(top4);
 });
+
+function positionPick(position) {
+
+    var positionData = transferPickData.filter(function(e) {
+        return e.Position === position
+    })
+
+    const top4 = getTopValues(filterData(positionData),10)
+    barChart(top4);
+}
 
 function filterData(data) {
     var barData = [];
 
     data.forEach(function(d) {
 
-
         var FDIndex = parseFloat(d["FD Index"]) || 0;
-
-        // var position = d["Position"]
-
         var lName = d["Last Name"]
         var fName = d["Name"]
 
@@ -48,15 +46,19 @@ function getTopValues(obj, topN) {
     return result;
 }
 
-function barChart(data, position) {
+function barChart(data) {
+
+    const div = d3.select('#BarChart')
+    
+    //https://stackoverflow.com/questions/10784018/how-can-i-remove-or-replace-svg-content
+    div.select("svg").remove();
 
     const bheight = parseInt(d3.select('#BarChart').style('height'))
     const bwidth = parseInt(d3.select('#BarChart').style('width'))
     
-    const bsvg = d3.select("#BarChart")
-                .append("svg")
-                .attr("width", bwidth)
-                .attr("height", bheight)
+    const bsvg = div.append("svg")
+                    .attr("width", bwidth)
+                    .attr("height", bheight)
 
     var x = d3.scaleLinear()
                 .range([0, bwidth])
@@ -113,12 +115,12 @@ function barChart(data, position) {
             .attr("text-anchor","end")
             .attr("font-size", 11);
 
-    // text label for the y axis
-    bsvg.append("text")
-        .attr("y", -4)
-        .attr("x",0)
-        .attr("dy", "1em")
-        .text(position);  
+    // // text label for the y axis
+    // bsvg.append("text")
+    //     .attr("y", -4)
+    //     .attr("x",0)
+    //     .attr("dy", "1em")
+    //     .text(position);  
 }
 
 // https://observablehq.com/@bumbeishvili/pulse

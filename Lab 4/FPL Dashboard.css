@@ -1,5 +1,6 @@
 * {
     font-family: sans-serif;
+    transition: all .2s ease;
 }
   
 html, body {
@@ -10,7 +11,7 @@ html, body {
 }
 
 header {
-  text-align: center;
+  text-align: left;
   font-size: 30px;
   margin-top: 20px;
   width: 100%;
@@ -65,9 +66,41 @@ div.tooltip {
 #BarChart {
   position: relative;
   width: 97%;
-  height: 22%;
+  height: 70%;
   left: 1.5%;
-  margin-top: 7%;
+  margin-top: 2%;
 }
 
+#positionDropdown {
+  margin-top: 2%;
+}
+
+.info {
+  font-size: 20px;
+  width: 30px;
+  border-radius: 15px;
+  float: right;
+  margin-right: 2%;
+}
+
+.info:hover {
+  background-color: black;
+  padding: 0 0 0 5px;
+  width: 315px;
+  height:  42px;
+  text-align: right !important;
+}
+
+.info:hover .extra-info {
+  display: block;
+}
+
+.extra-info {
+  display: none;
+  text-align: left;
+  font-size: 12px;
+	position: relative;
+  top: 0;
+
+}
 
