@@ -6,7 +6,13 @@ transfersIN.then(function(data) {
 });
 
 function transferPick(selection) {
-
+    if (selection.includes("In")) {
+        circular(transferFilter(topTransferData, selection))
+    } else if (selection.includes("Out")) {
+        transfersOut.then(function(data) {
+            circular(transferFilter(data, selection))
+        })
+    }
 }
 
 function transferFilter(data, column) {
@@ -48,7 +54,7 @@ function circular(data) {
                     .domain([0, d3.max(data, function(d) {
                         return d.count;
                     })])
-                    .range([3,50])  // circle will be between 7 and 55 px wide
+                    .range([5,60])  // circle will be between 7 and 55 px wide
 
     const Tooltip = d3.select("#transfersCircular")
                         .append("div")
