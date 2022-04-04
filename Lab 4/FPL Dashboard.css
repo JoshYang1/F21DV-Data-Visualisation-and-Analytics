@@ -84,23 +84,16 @@ div.tooltip {
 }
 
 .info:hover {
-  background-color: black;
-  padding: 0 0 0 5px;
-  width: 315px;
-  height:  42px;
-  text-align: right !important;
+  cursor: hand; 
+  cursor: pointer;
 }
 
-.info:hover .extra-info {
-  display: block;
+.popover {
+  top: 10px !important;
 }
 
-.extra-info {
-  display: none;
-  text-align: left;
+.popover-content {
+  color: red;
   font-size: 12px;
-	position: relative;
-  top: 0;
-
+  width: 200px;
 }
-
