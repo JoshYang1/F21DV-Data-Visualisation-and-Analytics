@@ -93,7 +93,7 @@ div.tooltip {
   margin-right: 2%;
 }
 
-.info:hover {
+.info:hover, circle:hover, rect:hover{
   cursor: hand; 
   cursor: pointer;
 }
