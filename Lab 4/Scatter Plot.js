@@ -24,6 +24,21 @@ fplData.then(function(data) {
 
         var position = parseInt(d["Position"])
 
+        switch(position) {
+            case 1:
+                position = "GK"
+                break;
+            case 2:
+                position = "DEF"
+                break;
+            case 3:
+                position = "MID"
+                break;
+            case 4:
+                position = "FWD"
+                break;
+          }
+
         var fname = d["Name"]
         var lname = d["Last Name"]
 
@@ -46,12 +61,6 @@ fplData.then(function(data) {
                 .range([height / 1.2, 0])
                 .nice();
 
-    //https://stackoverflow.com/questions/30018106/set-domain-on-ordinal-scale-from-tsv-data
-    const colorScale = d3.scaleOrdinal()
-                            .domain(scatterData.map(function(d){
-                                return d.position;
-                            }))
-                            .range(d3.schemeCategory10);
 
     svg.append("g")
         .attr("class", "myXaxis")   // Note that here we give a class to the X axis, to be able to call it later and modify it
@@ -65,12 +74,6 @@ fplData.then(function(data) {
     svg.append("g")
         .attr("class","colorLegend")
         .attr("transform",`translate(${width - margin.right},${margin.bottom - 40})`)
-
-    var colorLegend = d3.legendColor()
-                            .labelOffset(5)
-                            .scale(colorScale)
-                            .shape('circle')  
-                            .labels(["GK", "MID", "FWD", "DEF"]);
 
     // Add a tooltip div. Here I define the general feature of the tooltip: stuff that do not depend on the data point.
     // Its opacity is set to 0: we don't see it by default.
@@ -108,8 +111,6 @@ fplData.then(function(data) {
         .style("text-anchor", "middle")
         .text("Total Points");  
 
-    svg.select(".colorLegend")
-        .call(colorLegend)
 
     // Add dots
     // Have to create a variable so that the transition and mouse events are separated
@@ -125,6 +126,14 @@ fplData.then(function(data) {
         .style("opacity", 0)
         .style("fill", function (d) { return colorScale(d.position)})
 
+    var colorLegend = d3.legendColor()
+                        .labelOffset(5)
+                        .scale(colorScale)
+                        .shape('circle')  
+                        .labels(["GK", "MID", "FWD", "DEF"]);
+
+    svg.select(".colorLegend")
+        .call(colorLegend)            
 
     dots.transition()
         .delay(function(d,i) {
