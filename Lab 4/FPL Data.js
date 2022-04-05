@@ -24,3 +24,5 @@ const colorScale = d3.scaleOrdinal()
 // function to retrieve an element and add an event listener
 // const btn = document.querySelector('button');
 // btn.addEventListener('click', getData)
+
+console.log(fplData)
