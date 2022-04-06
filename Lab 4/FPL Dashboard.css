@@ -17,6 +17,11 @@ header {
   width: 100%;
 }
 
+#logo {
+  width: 10%;
+  height : 8%;
+}
+
 #container {
   top: 20px;
   position: relative;
