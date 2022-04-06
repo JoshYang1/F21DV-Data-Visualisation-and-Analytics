@@ -29,7 +29,6 @@ header {
   height: 500px;
   padding: 0;
   margin: 0;
-  background-color: purple;
 }
 
 #container2 {
@@ -39,18 +38,38 @@ header {
   height: 500px;
   padding: 0;
   margin: 20;
-  background-color: purple;
 }
+
+#axisDropdownContainer {
+  background-color: lightgray;
+  width: 100%;
+  height: 5%;
+  display: inline-block;
+  float: TOP;
+}
+
+#scatterContainer {
+  width: 71%;
+  height: 99%;
+  margin-left: 1%;
+  display: inline-block;
+  float: left;
+}
+
+#yAxisDropdown, #xAxisDropdown {
+  display: inline-block;
+  height: 100%;
+  float: right;
+}
+
 
 #scatterPlot {
   position: relative;
-  width: 71%;
-  height: 470px;
+  width: 100%;
+  height: 95%;
   background-color: lightgray;
-  top: 15px;
-  left: 20px;
   display: inline-block;
-  float: bottom;
+  float: BOTTOM;
 }
 
 div.tooltip {
@@ -68,10 +87,9 @@ div.tooltip {
 
 #barContainer {
   position: relative;
-  width: 360px;
-  height: 470px;
-  top: 15px;
-  right: 20px;
+  width: 26%;
+  height: 100%;
+  right: 1%;
   background-color: lightgray;
   display: inline-block;
   float: right;

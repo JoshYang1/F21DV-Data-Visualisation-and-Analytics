@@ -8,79 +8,64 @@ const svg = d3.select("#scatterPlot")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`)
+                .attr("transform", `translate(${margin.left},${margin.top})`);
 
-fplData.then(function(data) {
+// Add X axis
+var x = d3.scaleLinear()
+            .rangeRound([0, width/1.2]);
 
-    const scatterData = [];
+// Add Y axis
+var y = d3.scaleLinear()
+            .range([height / 1.2, 0]);
+
+svg.append("g")
+    .attr("class", "myXaxis")   // Note that here we give a class to the X axis, to be able to call it later and modify it
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .attr("opacity", "0");
+
+svg.append("g")
+    .attr("class", "myYaxis")   // Note that here we give a class to the X axis, to be able to call it later and modify it
+    .attr("opacity", "0");
+
+var xLabel = svg.append("text")             
+                .attr("transform",
+                    `translate(${width / 2 - 100},${height - margin.top - 10})`)
+                .style("text-anchor", "middle");
+
+var yLabel = svg.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 10 - margin.left)
+                .attr("x",0 - (height / 2 - 30))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle");
+
+var scatterData = [];
+
+var xData, yData;
+
+function scatterPlot(data) {
 
     data.forEach(function(d) {
 
-        var cost = (parseInt(d["Cost Today"]) / 10) || 0;
-        var ict = parseFloat(d["ICT Index"]) || 0;
-        var ictCost = ict / cost;
+        var ictCost = d.ICT / d.Cost;
 
-        var totalPoints = parseInt(d["Total Points"]) || 0;
-
-        var position = parseInt(d["Position"])
-
-        switch(position) {
-            case 1:
-                position = "GK"
-                break;
-            case 2:
-                position = "DEF"
-                break;
-            case 3:
-                position = "MID"
-                break;
-            case 4:
-                position = "FWD"
-                break;
-          }
-
-        var fname = d["Name"]
-        var lname = d["Last Name"]
-
-        scatterData.push({totalPoints: totalPoints, ictCost: ictCost, position: position, fname: fname, lname: lname});
-    })
-
-    // Add X axis
-    var x = d3.scaleLinear()
-                .rangeRound([0, width/1.2])
-                .domain([0, d3.max(scatterData, function(d)  {
-                    return d.ictCost; 
-                })])
-                .nice();
-
-    // Add Y axis
-    var y = d3.scaleLinear()
-                .domain([0, d3.max(scatterData, function(d) {
-                    return d.totalPoints;
-                })])
-                .range([height / 1.2, 0])
-                .nice();
+        scatterData.push({totalPoints: d["Total Points"], ictCost: ictCost, position: d.Position, name: d.Name});
+    });
 
 
-    svg.append("g")
-        .attr("class", "myXaxis")   // Note that here we give a class to the X axis, to be able to call it later and modify it
-        .attr("transform", `translate(0,${height - margin.bottom})`)
-        .attr("opacity", "0")
+    x.domain([0, d3.max(scatterData, function(d)  {
+            return d.ictCost; 
+        })])
+        .nice();
 
-    svg.append("g")
-        .attr("class", "myYaxis")   // Note that here we give a class to the X axis, to be able to call it later and modify it
-        .attr("opacity", "0")
+    y.domain([0, d3.max(scatterData, function(d) {
+            return d.totalPoints;
+        })])
+        .nice();
 
     svg.append("g")
         .attr("class","colorLegend")
         .attr("transform",`translate(${width - margin.right},${margin.bottom - 40})`)
-
-    // Add a tooltip div. Here I define the general feature of the tooltip: stuff that do not depend on the data point.
-    // Its opacity is set to 0: we don't see it by default.
-    const tooltip = d3.select("#scatterPlot")
-                        .append("div")
-                        .attr("class", "tooltip")
-                        .style("opacity", 0)
 
     svg.select(".myXaxis")
         .transition()
@@ -90,11 +75,8 @@ fplData.then(function(data) {
 
     // text label for the x axis
     // https://bl.ocks.org/d3noob/23e42c8f67210ac6c678db2cd07a747e
-    svg.append("text")             
-        .attr("transform",
-            `translate(${width / 2 - 100},${height - margin.top - 10})`)
-        .style("text-anchor", "middle")
-        .text("ICT per Cost");
+
+    xLabel.text("ICT per Cost");
 
     svg.select(".myYaxis")
         .transition()
@@ -103,28 +85,10 @@ fplData.then(function(data) {
         .call(d3.axisLeft(y));
 
       // text label for the y axis
-    svg.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 10 - margin.left)
-        .attr("x",0 - (height / 2 - 30))
-        .attr("dy", "1em")
-        .style("text-anchor", "middle")
-        .text("Total Points");  
 
+    yLabel.text("Total Points");  
 
-    // Add dots
-    // Have to create a variable so that the transition and mouse events are separated
-    // https://stackoverflow.com/questions/22645162/d3-when-i-add-a-transition-my-mouseover-stops-working-why
-    var dots = svg.selectAll("dot")
-        .data(scatterData)
-        .enter()
-        .append("circle")
-        .attr("id", function (d) { return d.fname + " " + d.lname})
-        .attr("cx", function (d) { return x(d.ictCost); } )
-        .attr("cy", function (d) { return y(d.totalPoints); } )
-        .attr("r", 2.5)
-        .style("opacity", 0)
-        .style("fill", function (d) { return colorScale(d.position)})
+    dots(scatterData)
 
     var colorLegend = d3.legendColor()
                         .labelOffset(5)
@@ -134,21 +98,46 @@ fplData.then(function(data) {
 
     svg.select(".colorLegend")
         .call(colorLegend)            
+            
+}
 
-    dots.transition()
+// Add dots
+// Have to create a variable so that the transition and mouse events are separated
+// https://stackoverflow.com/questions/22645162/d3-when-i-add-a-transition-my-mouseover-stops-working-why
+function dots(data) {
+
+    var dots = svg.selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("id", function (d) { return d.name})
+        .attr("cx", function (d) { return x(d.ictCost); } )
+        .attr("cy", function (d) { return y(d.totalPoints); } )
+        .attr("r", 2.5)
+        .style("opacity", 0)
+        .style("fill", function (d) { return colorScale(d.position)});
+    
+        dots.transition()
         .delay(function(d,i) {
                 return(i*3)
             })
         .duration(2000)
         .style("opacity", 0.8);
-    
+
+    // Add a tooltip div. Here I define the general feature of the tooltip: stuff that do not depend on the data point.
+    // Its opacity is set to 0: we don't see it by default.
+    const tooltip = d3.select("#scatterPlot")
+                        .append("div")
+                        .attr("class", "tooltip")
+                        .style("opacity", 0)
+
     // https://bl.ocks.org/d3noob/97e51c5be17291f79a27705cef827da2
     dots.on("mouseover", function(event,d) {
             tooltip.transition()
               .duration(200)
               .style("opacity", .8)
 
-            tooltip.html("Player: " + d.lname + "<br>"  + "Total Points: " + d.totalPoints + "<br>" + "ICT per cost: " + d.ictCost.toFixed(2))
+            tooltip.html("Player: " + d.name + "<br>"  + "Total Points: " + d.totalPoints + "<br>" + "ICT per cost: " + d.ictCost.toFixed(2))
               .style("left", (event.x) + "px")
               .style("top", (event.y -50) + "px")
               .style("background", colorScale(d.position));
@@ -162,8 +151,61 @@ fplData.then(function(data) {
                 statTable(d);
                 hoverDotSelection(d)
             });
-            
-})
+}
+
+function setXAxis(selection){
+    xData = selection;
+
+    if (xData != undefined && yData !=undefined) {
+        populateAxis();
+    }
+}
+
+function setYAxis(selection){
+    yData = selection;
+
+    if (xData != undefined && yData !=undefined) {
+        populateAxis();
+    }
+}
+
+function populateAxis() {
+    var x = getKey(xData)
+    var y = getKey(yData)
+
+    scatterData = []
+
+    fplData.forEach(function(d) {
+        scatterData.push({x: d[x], y: d[y], position: d.Position, name: d.Name});
+    });
+
+
+}
+
+function getKey(key) {
+
+    switch(key) {
+        case "Cost":
+            return "Cost Today"
+            break;
+        case "Selection (%)":
+            return "Selection %"
+            break;
+        case "Points per Game":
+            return "Points/Game"
+            break;
+        case "Yellow Cards":
+            return "YC"
+            break;
+        case "Red Cards":
+            return "RC"
+            break;
+        default:
+            return key
+            break;
+    }
+}
+
 
 // https://observablehq.com/@bumbeishvili/pulse
 function hoverDotSelection (event) {

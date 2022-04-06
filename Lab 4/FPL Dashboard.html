@@ -27,12 +27,47 @@
         </div>
     </header>
     <div id="container">
-        <div id="scatterPlot"></div>
-        <script src="./Scatter Plot.js"></script>
+        <div id="scatterContainer">
+            <div id="axisDropdownContainer">
+                <select id="yAxisDropdown" onchange= "setYAxis(this.value)">
+                    <option selected disabled>--Y Axis--</option>
+                    <option value="Cost">Cost</option>
+                    <option value="Form">Form</option>
+                    <option value="Selection (%)">Selection (%)</option>
+                    <option value="Goals">Goals</option>
+                    <option value="Assists">Assists</option>
+                    <option value="Clean Sheets">Clean Sheets</option>
+                    <option value="GW Points">GW Points</option>
+                    <option value="Total Points">Total Points</option>
+                    <option value="Points per Game">Points Per Game</option>
+                    <option value="Yellow Cards">Yellow Cards</option>
+                    <option value="Red Cards">Red Cards</option>
+                    <option value="Saves">Saves</option>
+                </select>
+                <select id="xAxisDropdown" onchange="setXAxis(this.value)">
+                    <option selected disabled>--X Axis--</option>
+                    <option value="Cost">Cost</option>
+                    <option value="Form">Form</option>
+                    <option value="Selection (%)">Selection (%)</option>
+                    <option value="Goals">Goals</option>
+                    <option value="Assists">Assists</option>
+                    <option value="Clean Sheets">Clean Sheets</option>
+                    <option value="GW Points">GW Points</option>
+                    <option value="Total Points">Total Points</option>
+                    <option value="Points per Game">Points Per Game</option>
+                    <option value="Yellow Cards">Yellow Cards</option>
+                    <option value="Red Cards">Red Cards</option>
+                    <option value="Saves">Saves</option>
+                </select>
+            </div>
+            <div id="scatterPlot"></div>
+            <script src="./Scatter Plot.js"></script>
+        </div>
+
         <div id="barContainer">
             Top Transfer Picks (By FD Index)
             <select id="positionDropdown" onchange="positionPick(this.value)">
-                <option value="">--Please choose a position--</option>
+                <option selected disabled>--Please choose a position--</option>
                 <option value="GK">GK</option>
                 <option value="DEF">DEF</option>
                 <option value="MID">MID</option>
