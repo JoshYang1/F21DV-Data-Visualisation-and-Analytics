@@ -22,10 +22,10 @@ function filterData(data) {
     data.forEach(function(d) {
 
         var FDIndex = parseFloat(d["FD Index"]) || 0;
-        var lName = d["Last Name"]
-        var fName = d["Name"]
+        var lname = d["Last Name"]
+        var fname = d["Name"]
 
-        barData.push({fName: fName, lName: lName, FDIndex: FDIndex});
+        barData.push({fname: fname, lname: lname, FDIndex: FDIndex});
     })
     return barData;
 }
@@ -69,7 +69,7 @@ function barChart(data) {
     var y = d3.scaleBand()
                 .rangeRound([0, bheight - 10])
                 .domain(data.map(function (d) {
-                    return d[1].fName + " " + d[1].lName;
+                    return d[1].fname + " " + d[1].lname;
                 }))
                 .padding(0.1);
 
@@ -80,7 +80,7 @@ function barChart(data) {
                     .enter()
                     .append("rect")
 
-    bars.attr("y", function(d) { return y(d[1].fName + " " + d[1].lName) + 10; })
+    bars.attr("y", function(d) { return y(d[1].fname + " " + d[1].lname) + 10; })
         .attr("height", y.bandwidth())
         .attr("x", 0)
         .attr("width", function(d) { return x(d[1]['FDIndex']); })
@@ -100,6 +100,7 @@ function barChart(data) {
                 .attr("fill", "purple");
             
                 hoverDotSelection(d);
+                statTable(d);
         });
     
     // https://riptutorial.com/d3-js/example/17339/correctly-appending-an-svg-element
@@ -109,8 +110,8 @@ function barChart(data) {
                     .append("text");   
 
     labels.attr("x", function(d) { return x(d[1]['FDIndex']) - 5; })
-            .attr("y", function(d) {return y(d[1].fName + " " + d[1].lName) + 27;})
-            .text(function(d) {return d[1].fName + " " + d[1].lName + " " + d[1]['FDIndex']})
+            .attr("y", function(d) {return y(d[1].fname + " " + d[1].lname) + 27;})
+            .text(function(d) {return d[1].fname + " " + d[1].lname + " " + d[1]['FDIndex']})
             .attr("fill", "white")
             .attr("text-anchor","end")
             .attr("font-size", 11);
@@ -122,29 +123,3 @@ function barChart(data) {
     //     .attr("dy", "1em")
     //     .text(position);  
 }
-
-// https://observablehq.com/@bumbeishvili/pulse
-function hoverDotSelection (selection) {
-
-    var playerName = selection[1].fName + " " + selection[1].lName
-    var element = document.getElementById(playerName);
-    var circle = d3.select(element);
-    
-    pulse(circle);
-
-    function pulse(circle) {
-          (function repeat() {
-             circle
-              .transition()
-              .duration(500)
-              .attr("r", 10)
-              .transition()
-              .duration(500)
-              .attr("r", 5)
-              .transition()
-              .duration(1000)
-              .ease(d3.easeSin)
-              .on("end", repeat);
-          })();
-       }
-    }

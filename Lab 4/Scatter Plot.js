@@ -157,5 +157,43 @@ fplData.then(function(data) {
                 tooltip.transition()
                   .duration(500)
                   .style("opacity", 0);
-                });
+                })
+            .on('click', function(event, d) {
+                statTable(d);
+                hoverDotSelection(d)
+            });
+            
 })
+
+// https://observablehq.com/@bumbeishvili/pulse
+function hoverDotSelection (event) {
+
+    var player;
+    
+    if (event.length != undefined) {
+        player = event[1].fname + " " + event[1].lname
+    } else {
+        player = event.fname + " " + event.lname
+    }
+    
+    var element = document.getElementById(player);
+    var circle = d3.select(element);
+    
+    pulse(circle);
+
+    function pulse(circle) {
+          (function repeat() {
+             circle
+              .transition()
+              .duration(500)
+              .attr("r", 10)
+              .transition()
+              .duration(500)
+              .attr("r", 5)
+              .transition()
+              .duration(1000)
+              .ease(d3.easeSin)
+              .on("end", repeat);
+          })();
+       }
+    }

@@ -55,6 +55,10 @@ managers.then(function(data) {
         Tooltip
         .style("opacity", 0)
     }
+    var mouseClick = function(event, d) {
+        statTable(d)
+        hoverDotSelection(d)
+    }
 
     // Initialize the circle: all located at the center of the svg area
     var node = csvg.append("g")
@@ -72,6 +76,7 @@ managers.then(function(data) {
                     .on("mouseover", mouseover) // What to do when hovered
                     .on("mousemove", mousemove)
                     .on("mouseleave", mouseleave)
+                    .on("click", mouseClick)
                     .call(d3.drag() // call specific function when circle is dragged
                         .on("start", dragstarted)
                         .on("drag", dragged)
@@ -90,7 +95,7 @@ managers.then(function(data) {
                                                 return (size(d.count)+3) })
                                             .iterations(1)) // Force that avoids circle overlapping
                 
-     // Apply these forces to the nodes and update their positions.
+    // Apply these forces to the nodes and update their positions.
   // Once the force algorithm is happy with positions ('alpha' value is low enough), simulations will stop.
   simulation.nodes(circleData)
             .on("tick", function(d){
