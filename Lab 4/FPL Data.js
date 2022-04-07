@@ -1,7 +1,7 @@
 const googleAPI = "https://opensheet.elk.sh/";
 const spreadsheet = "1_rkHKgIPt3i_2uKr8kh5u4WZaYOLccNiiTx1xAaAo_Y";
 
-var fplData
+var fplData;
 
 fetchData("Data").then(function(d) {
     fplData = dataTabParser(d);
@@ -143,7 +143,3 @@ function dataTabParser(data) {
 const colorScale = d3.scaleOrdinal()
                         .domain(["GK", "MID", "FWD", "DEF"])
                         .range(d3.schemeCategory10);
-
-// function to retrieve an element and add an event listener
-// const btn = document.querySelector('button');
-// btn.addEventListener('click', getData)
