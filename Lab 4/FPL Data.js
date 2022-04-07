@@ -4,8 +4,8 @@ const spreadsheet = "1_rkHKgIPt3i_2uKr8kh5u4WZaYOLccNiiTx1xAaAo_Y";
 var fplData
 
 fetchData("Data").then(function(d) {
-    fplData = d;
-    scatterPlot(dataTabParser(d));
+    fplData = dataTabParser(d);
+    scatterPlot(fplData);
 })
 
 
@@ -134,7 +134,7 @@ function dataTabParser(data) {
                 break;
         }
 
-        stats.push({Name: name, Team: team, Position: position, Cost: cost, Fixtures: fixtures, Goals: goals, Assists: assists, "Clean Sheets": cs,  Saves: saves, "Yellow Cards": yellow, "Red Cards": red, ICT: ict, "Chance of Playing": cop,  Form: form, "GW Points": GWpoints, "Points per Game": pointsPerGame, "Total Points": totalPoints, "Selection (%)": selection});
+        stats.push({Name: name, Team: team, Position: position, Cost: cost, Fixtures: fixtures, Goals: goals, Assists: assists, "Clean Sheets": cs,  Saves: saves, "Yellow Cards": yellow, "Red Cards": red, ICT: ict, "Chance of Playing": cop,  Form: form, "GW Points": GWpoints, "Points per Game": pointsPerGame, "Total Points": totalPoints, "Selection": selection});
     })
     return stats;
 }

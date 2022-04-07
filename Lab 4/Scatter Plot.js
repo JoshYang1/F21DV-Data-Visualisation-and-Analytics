@@ -49,7 +49,7 @@ function scatterPlot(data) {
 
         var ictCost = d.ICT / d.Cost;
 
-        scatterData.push({totalPoints: d["Total Points"], ictCost: ictCost, position: d.Position, name: d.Name});
+        scatterData.push({ictCost: ictCost, totalPoints: d["Total Points"], position: d.Position, name: d.Name});
     });
 
 
@@ -106,23 +106,59 @@ function scatterPlot(data) {
 // https://stackoverflow.com/questions/22645162/d3-when-i-add-a-transition-my-mouseover-stops-working-why
 function dots(data) {
 
+    var xKey = Object.keys(data[0])[0]
+    var yKey = Object.keys(data[0])[1]
+
     var dots = svg.selectAll("dot")
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("id", function (d) { return d.name})
-        .attr("cx", function (d) { return x(d.ictCost); } )
-        .attr("cy", function (d) { return y(d.totalPoints); } )
-        .attr("r", 2.5)
-        .style("opacity", 0)
-        .style("fill", function (d) { return colorScale(d.position)});
+                    .data(data)
+                    .join(
+                        function(enter) {
+                            return enter
+                                .append('circle')
+                                .attr("id", function (d) { return d.name})
+                                .attr("cx", function (d) { return x(d[xKey]); } )
+                                .attr("cy", function (d) { return y(d[yKey]); } )
+                                .style("fill", function (d) { return colorScale(d.position)})
+                                .style('opacity', 0);
+                        },
+                        function(update) {
+                            return update;
+                        },
+                        function(exit) {
+                            return exit
+                                .transition()
+                                .duration(1000)
+                                .attr('cy', 500)
+                                .remove();
+                        }
+                    )
+                    .transition()
+                    .delay(function(d,i) {
+                        return(i*3)
+                    })
+                    .duration(2000)
+                    // .attr('cx', function(d) {
+                    //     return d;
+                    // })
+                    .attr("r", 2.5)
+                    .style('opacity', 0.75);
     
-        dots.transition()
-        .delay(function(d,i) {
-                return(i*3)
-            })
-        .duration(2000)
-        .style("opacity", 0.8);
+    //dots.exit().remove();
+
+    // dots.enter()
+    //     .append("circle")
+    //     .attr("id", function (d) { return d.name})
+    //     .attr("cx", function (d) { return x(d[xKey]); } )
+    //     .attr("cy", function (d) { return y(d[yKey]); } )
+    //     .style("fill", function (d) { return colorScale(d.position)})
+    //     .merge(dots)
+    //     .transition()
+    //     .delay(function(d,i) {
+    //                 return(i*3)
+    //             })
+    //     .duration(2000)
+    //     .attr("r", 2.5)
+    //     .style("opacity", 0.8);
 
     // Add a tooltip div. Here I define the general feature of the tooltip: stuff that do not depend on the data point.
     // Its opacity is set to 0: we don't see it by default.
@@ -131,26 +167,26 @@ function dots(data) {
                         .attr("class", "tooltip")
                         .style("opacity", 0)
 
-    // https://bl.ocks.org/d3noob/97e51c5be17291f79a27705cef827da2
-    dots.on("mouseover", function(event,d) {
-            tooltip.transition()
-              .duration(200)
-              .style("opacity", .8)
+    // // https://bl.ocks.org/d3noob/97e51c5be17291f79a27705cef827da2
+    // dots.on("mouseover", function(event,d) {
+    //         tooltip.transition()
+    //           .duration(200)
+    //           .style("opacity", .8)
 
-            tooltip.html("Player: " + d.name + "<br>"  + "Total Points: " + d.totalPoints + "<br>" + "ICT per cost: " + d.ictCost.toFixed(2))
-              .style("left", (event.x) + "px")
-              .style("top", (event.y -50) + "px")
-              .style("background", colorScale(d.position));
-            })
-            .on("mouseout", function(d) {
-                tooltip.transition()
-                  .duration(500)
-                  .style("opacity", 0);
-                })
-            .on('click', function(event, d) {
-                statTable(d);
-                hoverDotSelection(d)
-            });
+    //         tooltip.html("Player: " + d.name + "<br>"  + "Total Points: " + d.totalPoints + "<br>" + "ICT per cost: " + d.ictCost.toFixed(2))
+    //           .style("left", (event.x) + "px")
+    //           .style("top", (event.y -50) + "px")
+    //           .style("background", colorScale(d.position));
+    //         })
+    //         .on("mouseout", function(d) {
+    //             tooltip.transition()
+    //               .duration(500)
+    //               .style("opacity", 0);
+    //             })
+    //         .on('click', function(event, d) {
+    //             statTable(d);
+    //             hoverDotSelection(d)
+    //         });
 }
 
 function setXAxis(selection){
@@ -170,40 +206,38 @@ function setYAxis(selection){
 }
 
 function populateAxis() {
-    var x = getKey(xData)
-    var y = getKey(yData)
 
     scatterData = []
 
     fplData.forEach(function(d) {
-        scatterData.push({x: d[x], y: d[y], position: d.Position, name: d.Name});
+        scatterData.push({[xData]: d[xData], [yData]: d[yData], position: d.Position, name: d.Name});
     });
 
+    x.domain([0, d3.max(scatterData, function(d)  {
+            return d[xData]; 
+        })])
+        .nice();
 
-}
+    y.domain([0, d3.max(scatterData, function(d) {
+            return d[yData];
+        })])
+        .nice();
 
-function getKey(key) {
+    svg.selectAll(".myXaxis")
+        .transition()
+        .duration(2000)
+        .call(d3.axisBottom(x));
 
-    switch(key) {
-        case "Cost":
-            return "Cost Today"
-            break;
-        case "Selection (%)":
-            return "Selection %"
-            break;
-        case "Points per Game":
-            return "Points/Game"
-            break;
-        case "Yellow Cards":
-            return "YC"
-            break;
-        case "Red Cards":
-            return "RC"
-            break;
-        default:
-            return key
-            break;
-    }
+    svg.selectAll(".myYaxis")
+        .transition()
+        .duration(2000)
+        .call(d3.axisLeft(y));
+    
+    xLabel.text(Object.keys(scatterData[0])[0])
+    yLabel.text(Object.keys(scatterData[0])[1])
+
+    dots(scatterData);
+
 }
 
 
