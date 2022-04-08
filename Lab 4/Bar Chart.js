@@ -45,10 +45,18 @@ function barChart(data) {
     }))
     .padding(0.1);
 
+    // Scaling the colour of the bars
+    // https://d3-graph-gallery.com/graph/custom_color.html
+    var myColor = d3.scaleLinear()
+                    .domain(bx.domain())
+                    .range(["white", "purple"])
+
     // append the rectangles for the bar chart
     const bars = bsvg.selectAll("rect")
                     .data(data);
 
+    // Enter, update and exit functions for the rects in the bar chart
+    // https://observablehq.com/@d3/selection-join
     bars.join(
         enter => enter.append("rect")
                         .transition()
@@ -56,13 +64,13 @@ function barChart(data) {
                         .ease(d3.easeLinear)
                         .attr("y", function(d) { return by(d[1].Name) + 10; })
                         .attr("height", by.bandwidth())
-                        .attr("fill", "red")
+                        .attr("fill", d => myColor(d[1]['FDIndex']))
                         .attr("x", 0)
                         .attr("width", d => bwidth - bx(d[1]['FDIndex'])),
         update => update
                         .transition()
                         .duration(1000)
-                        .attr("fill", "blue")
+                        .attr("fill", d => myColor(d[1]['FDIndex']))
                         .attr("x", 0)
                         .attr("width", d => bwidth - bx(d[1]['FDIndex'])),  
         exit => exit.remove()
@@ -75,11 +83,11 @@ function barChart(data) {
         d3.select(this)
             .transition()
             .duration(250)
-            .attr("fill", "red");
+            .attr("fill", d => myColor(d[1]['FDIndex']))
     })
     .on('click', function(event, d) {
         d3.select(this)
-            .attr("fill", "purple");
+            .attr("fill", "black");
             // Hover the selection in the scatter graph
             hoverDotSelection(d[1].Name);
             // Display the player selected's stats
