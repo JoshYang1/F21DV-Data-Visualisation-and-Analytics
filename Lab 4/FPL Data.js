@@ -8,8 +8,16 @@ fetchData("Data").then(function(d) {
     scatterPlot(fplData);
 })
 
+var transferPickData;
 
-var transferPicks = fetchData("Transfer Pick - GK");
+fetchData("Transfer Pick - GK").then(function(data) {
+    console.log(data)
+    transferPickData = filterData(data);
+    const top4 = getTopValues(transferPickData,10)
+    barChart(top4);
+});
+
+
 var managers = fetchData("Top 100 Managers");
 var transfersIN = fetchData("Transfers-IN");
 var transfersOut = fetchData("Transfers-OUT");
@@ -138,6 +146,37 @@ function dataTabParser(data) {
     })
     return stats;
 }
+
+function filterData(data) {
+    var barData = [];
+
+    data.forEach(function(d) {
+
+        var FDIndex = parseFloat(d["FD Index"]) || 0;
+        var name = d["Name"] + " " + d["Last Name"];
+        var position = d.Position
+
+        barData.push({Name: name, FDIndex: FDIndex, Position: position});
+    })
+    return barData;
+}
+
+//https://stackoverflow.com/questions/60105631/top-highest-values-in-an-object-more-if-there-are-more-max-values-and-they-are
+function getTopValues(obj, topN) {
+
+    var sortedEntries = Object.entries(obj).sort(function(a,b){
+        return b[1]['FDIndex'] - a[1]['FDIndex']
+    });
+
+    // Find nth maximum value
+    var maxN = parseInt(sortedEntries[topN - 1][0]);
+
+    var result = sortedEntries.filter(function(entry){
+        return entry[0] <= maxN;
+    });
+    return result;
+}
+
 
 //https://stackoverflow.com/questions/30018106/set-domain-on-ordinal-scale-from-tsv-data
 const colorScale = d3.scaleOrdinal()

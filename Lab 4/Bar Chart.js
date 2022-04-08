@@ -1,86 +1,58 @@
-var transferPickData = {};
-
-transferPicks.then(function(data) {
-    transferPickData = data;
-    const top4 = getTopValues(filterData(data),10)
-    barChart(top4);
-});
-
+// Filter the data based on the dropdown selection
 function positionPick(position) {
 
     var positionData = transferPickData.filter(function(e) {
         return e.Position === position
-    })
-
-    const top4 = getTopValues(filterData(positionData),10)
-    barChart(top4);
-}
-
-function filterData(data) {
-    var barData = [];
-
-    data.forEach(function(d) {
-
-        var FDIndex = parseFloat(d["FD Index"]) || 0;
-        var lname = d["Last Name"]
-        var fname = d["Name"]
-
-        barData.push({fname: fname, lname: lname, FDIndex: FDIndex});
-    })
-    return barData;
-}
-
-//https://stackoverflow.com/questions/60105631/top-highest-values-in-an-object-more-if-there-are-more-max-values-and-they-are
-function getTopValues(obj, topN) {
-
-    var sortedEntries = Object.entries(obj).sort(function(a,b){
-        return b[1]['FDIndex'] - a[1]['FDIndex']
     });
 
-    // Find nth maximum value
-    var maxN = parseInt(sortedEntries[topN - 1][0]);
+    // Get the top 10 values
+    const top = getTopValues(positionData,10);
+    // Populate the bar Chart
+    barChart(top);
+};
 
-    var result = sortedEntries.filter(function(entry){
-        return entry[0] <= maxN;
-    });
-    return result;
-}
-
+// Create bar chart visual 
 function barChart(data) {
 
-    const div = d3.select('#BarChart')
+    // Select div element
+    const div = d3.select('#BarChart');
     
+    // Remove the current SVG so new SVG can be entered
     //https://stackoverflow.com/questions/10784018/how-can-i-remove-or-replace-svg-content
     div.select("svg").remove();
 
-    const bheight = parseInt(d3.select('#BarChart').style('height'))
-    const bwidth = parseInt(d3.select('#BarChart').style('width'))
+    // Height and width taken from the div element
+    const bheight = parseInt(d3.select('#BarChart').style('height'));
+    const bwidth = parseInt(d3.select('#BarChart').style('width'));
     
+    // Appending svg 
     const bsvg = div.append("svg")
                     .attr("width", bwidth)
-                    .attr("height", bheight)
+                    .attr("height", bheight);
 
+    // Setting x axis
     var x = d3.scaleLinear()
                 .range([0, bwidth])
                 .domain([0, d3.max(data, function (d) {
                     return d[1]['FDIndex'];
                 })]);
-
+    
+    // Setting y axis
     var y = d3.scaleBand()
                 .rangeRound([0, bheight - 10])
                 .domain(data.map(function (d) {
-                    return d[1].fname + " " + d[1].lname;
+                    return d[1].Name;
                 }))
                 .padding(0.1);
-
 
     // append the rectangles for the bar chart
     const bars = bsvg.selectAll(".bar")
                     .data(data)
                     .enter()
-                    .append("rect")
+                    .append("rect");
 
-    bars.attr("y", function(d) { return y(d[1].fname + " " + d[1].lname) + 10; })
+    // Setting the attributes and mouse events of the bars
+    bars.attr("y", function(d) { return y(d[1].Name) + 10; })
         .attr("height", y.bandwidth())
         .attr("x", 0)
         .attr("width", function(d) { return x(d[1]['FDIndex']); })
@@ -98,11 +70,13 @@ function barChart(data) {
         .on('click', function(event, d) {
             d3.select(this)
                 .attr("fill", "purple");
-            
-                hoverDotSelection(d);
-                statTable(d);
+                // Hover the selection in the scatter graph
+                hoverDotSelection(d[1].Name);
+                // Display the player selected's stats
+                statTable(d[1].Name);
         });
-    
+
+    // Adding labels to the bars
     // https://riptutorial.com/d3-js/example/17339/correctly-appending-an-svg-element
     const labels = bsvg.selectAll(".myTexts")
                     .data(data)
@@ -110,16 +84,9 @@ function barChart(data) {
                     .append("text");   
 
     labels.attr("x", function(d) { return x(d[1]['FDIndex']) - 5; })
-            .attr("y", function(d) {return y(d[1].fname + " " + d[1].lname) + 27;})
-            .text(function(d) {return d[1].fname + " " + d[1].lname + " " + d[1]['FDIndex']})
+            .attr("y", function(d) {return y(d[1].Name) + 27;})
+            .text(function(d) {return d[1].Name + " " + d[1]['FDIndex']})
             .attr("fill", "white")
             .attr("text-anchor","end")
             .attr("font-size", 11);
-
-    // // text label for the y axis
-    // bsvg.append("text")
-    //     .attr("y", -4)
-    //     .attr("x",0)
-    //     .attr("dy", "1em")
-    //     .text(position);  
 }
