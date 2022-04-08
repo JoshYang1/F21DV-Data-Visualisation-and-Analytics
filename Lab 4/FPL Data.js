@@ -1,24 +1,31 @@
+// API to scrape Google sheet into JSON format
 const googleAPI = "https://opensheet.elk.sh/";
+// Spreadsheet with the FPL data
 const spreadsheet = "1_rkHKgIPt3i_2uKr8kh5u4WZaYOLccNiiTx1xAaAo_Y";
 
-var fplData;
+// Creating global variables
+var fplData, transferPickData, managers;
 
+// Fetching and parsing data tab
 fetchData("Data").then(function(d) {
     fplData = dataTabParser(d);
     scatterPlot(fplData);
 })
 
-var transferPickData;
-
+// Fetching, parsing and filtering Transfer Pick tab
 fetchData("Transfer Pick - GK").then(function(data) {
-    console.log(data)
     transferPickData = filterData(data);
-    const top4 = getTopValues(transferPickData,10)
-    barChart(top4);
+    const top = getTopValues(transferPickData,10)
+    barChart(top);
+});
+
+// Fetching, parsing and filtering Top 100 Managers tab
+fetchData("Top 100 Managers").then(function(data) {
+    managers = parseManager(data);
+    managerCircle(managers);
 });
 
 
-var managers = fetchData("Top 100 Managers");
 var transfersIN = fetchData("Transfers-IN");
 var transfersOut = fetchData("Transfers-OUT");
 
@@ -177,6 +184,22 @@ function getTopValues(obj, topN) {
     return result;
 }
 
+function parseManager(data) {
+    const circleData = [];
+
+    data.forEach(function(d) {
+
+        var count = parseInt(d.Count) || 0;
+
+        var position = d.Position
+
+        var name = d["Name"] + " " + d["Last Name"];
+
+        circleData.push({Count: count, Position: position, Name: name});
+    })
+    
+    return circleData;
+}
 
 //https://stackoverflow.com/questions/30018106/set-domain-on-ordinal-scale-from-tsv-data
 const colorScale = d3.scaleOrdinal()

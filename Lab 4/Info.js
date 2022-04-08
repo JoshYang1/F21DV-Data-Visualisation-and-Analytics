@@ -1,4 +1,4 @@
-
+// Info button popover will appear when clicked
 //https://codepen.io/nwalton3/pen/DmwPJe
 $('.icon-info-sign').popover({html: true, 
                                 placement:"left", 
