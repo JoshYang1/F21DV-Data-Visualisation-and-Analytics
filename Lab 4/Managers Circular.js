@@ -11,7 +11,7 @@ const csvg = d3.select("#circularChart")
 // Function to create circle graph
 function managerCircle(data) {
 
-    // Size scale for the count of transfers
+    // Size scale for the count of players
     const size = d3.scaleLinear()
                     .domain([0, d3.max(data, function(d) {
                         return d.Count;

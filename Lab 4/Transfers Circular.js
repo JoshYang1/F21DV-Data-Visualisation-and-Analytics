@@ -1,61 +1,39 @@
-var topTransferData = {};
-
-transfersIN.then(function(data) {
-    topTransferData = data;
-    circular(transferFilter(data, "Transfers In"))
-});
-
+// Button interaction will feed data into graph
 function transferPick(selection) {
     if (selection.includes("In")) {
-        circular(transferFilter(topTransferData, selection))
+        transferCircle(transfersIN)
     } else if (selection.includes("Out")) {
-        transfersOut.then(function(data) {
-            circular(transferFilter(data, selection))
-        })
+        transferCircle(transfersOut)
     }
-}
+};
 
-function transferFilter(data, column) {
+// Create transfer circle graph
+function transferCircle(data) {
 
-    var circleData = [];
-
-    data.forEach(function(d) {
-
-        var count = parseInt(d[column]) || 0;
-
-        var position = d.Position
-
-        var fname = d["Name"]
-        var lname = d["Last Name"]
-
-        circleData.push({count: count, position: position, fname: fname, lname: lname});
-    })
-
-    return circleData;
-}
-
-function circular(data) {
-
-    const div = d3.select('#transfersCircular')
+    // Select div element
+    const div = d3.select('#transfersCircular');
     
+    // Remove current SVG
     //https://stackoverflow.com/questions/10784018/how-can-i-remove-or-replace-svg-content
     div.select("svg").remove();
 
+    // Height and width of the div element
     const theight = parseInt(d3.select('#transfersCircular').style('height'));
     const twidth = parseInt(d3.select('#transfersCircular').style('width'));
 
-    // append the svg object
+    // Append the svg object
     const svg = div.append("svg")
                     .attr("width", twidth)
-                    .attr("height", theight - parseInt(d3.select('#buttonContainer').style('height')))
+                    .attr("height", theight - parseInt(d3.select('#buttonContainer').style('height'))); // Leave space for the buttons
 
-  // Size scale for countries
-  const size = d3.scaleLinear()
+    // Size scale for the count of transfers
+    const size = d3.scaleLinear()
                     .domain([0, d3.max(data, function(d) {
-                        return d.count;
+                        return d.Count;
                     })])
-                    .range([5,60])  // circle will be between 7 and 55 px wide
-
+                    .range([5,60])  // circle will be between 5 and 60 px wide
+    
+    // Create tooltip
     const Tooltip = d3.select("#transfersCircular")
                         .append("div")
                         .style("opacity", 0)
@@ -66,14 +44,14 @@ function circular(data) {
                         .style("border-radius", "5px")
                         .style("padding", "5px");
 
-    // Three function that change the tooltip when user hover / move / leave a cell
+    // Four functions that change the tooltip when user hover / move / leave / click a cell
     const mouseover = function(event, d) {
         Tooltip
         .style("opacity", 1)
     }
     const mousemove = function(event, d) {
         Tooltip
-        .html('<u>' + d.fname + " " + d.lname + '</u>' + "<br>" + d.count + " transfers")
+        .html('<u>' + d.Name + '</u>' + "<br>" + d.Count + " transfers")
         .style("left", (event.x/2-100) + "px")
         .style("top", (event.y/2-30) + "px")
     }
@@ -82,10 +60,11 @@ function circular(data) {
         .style("opacity", 0)
     }
     var mouseClick = function(event, d) {
-        statTable(d)
-        hoverDotSelection(d)
+        // Display stats table
+        statTable(d.Name)
+        // Hover the selected dot in scatter graph
+        hoverDotSelection(d.Name)
     }
-
 
     // Initialize the circle: all located at the center of the svg area
     var node = svg.append("g")
@@ -93,14 +72,14 @@ function circular(data) {
                 .data(data)
                 .join("circle")
                     .attr("class", "node")
-                    .attr("r", d => size(d.count))
+                    .attr("r", d => size(d.Count))
                     .attr("cx", twidth / 2)
                     .attr("cy", theight / 2)
-                    .style("fill", d => colorScale(d.position))
+                    .style("fill", d => colorScale(d.Position))
                     .style("fill-opacity", 0.8)
                     .attr("stroke", "black")
                     .style("stroke-width", 1)
-                    .on("mouseover", mouseover) // What to do when hovered
+                    .on("mouseover", mouseover)
                     .on("mousemove", mousemove)
                     .on("mouseleave", mouseleave)
                     .on("click", mouseClick)
@@ -110,7 +89,7 @@ function circular(data) {
                         .on("end", dragended));
 
     // Features of the forces applied to the nodes:
-  const simulation = d3.forceSimulation()
+    const simulation = d3.forceSimulation()
                         .force("center", d3.forceCenter()
                                             .x(twidth / 2)
                                             .y(theight / 2)) // Attraction to the center of the svg area
@@ -119,19 +98,19 @@ function circular(data) {
                         .force("collide", d3.forceCollide()
                                             .strength(.2)
                                             .radius(function(d){ 
-                                                return (size(d.count)+3) })
+                                                return (size(d.Count)+3) })
                                             .iterations(1)) // Force that avoids circle overlapping
                 
      // Apply these forces to the nodes and update their positions.
-  // Once the force algorithm is happy with positions ('alpha' value is low enough), simulations will stop.
-  simulation.nodes(data)
+    // Once the force algorithm is happy with positions ('alpha' value is low enough), simulations will stop.
+    simulation.nodes(data)
             .on("tick", function(d){
                 node
                     .attr("cx", d => d.x)
                     .attr("cy", d => d.y)
             });
 
-    // What happens when a circle is dragged?
+    // What happens when a circle is dragged
     function dragstarted(event, d) {
         if (!event.active) simulation.alphaTarget(.03).restart();
         d.fx = d.x;
