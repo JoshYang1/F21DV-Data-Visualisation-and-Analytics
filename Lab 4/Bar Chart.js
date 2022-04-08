@@ -1,3 +1,18 @@
+// Height and width taken from the div element
+const bheight = parseInt(d3.select('#BarChart').style('height'));
+const bwidth = parseInt(d3.select('#BarChart').style('width'));
+
+// Select div element
+const div = d3.select('#BarChart');
+
+// Setting x axis
+var bx = d3.scaleLinear()
+            .range([bwidth, 0]);
+            
+// Setting y axis
+var by = d3.scaleBand()
+            .rangeRound([0, bheight - 10]);
+
 // Filter the data based on the dropdown selection
 function positionPick(position) {
 
@@ -14,50 +29,45 @@ function positionPick(position) {
 // Create bar chart visual 
 function barChart(data) {
 
-    // Select div element
-    const div = d3.select('#BarChart');
-    
-    // Remove the current SVG so new SVG can be entered
-    //https://stackoverflow.com/questions/10784018/how-can-i-remove-or-replace-svg-content
+    // Remove current SVG
     div.select("svg").remove();
 
-    // Height and width taken from the div element
-    const bheight = parseInt(d3.select('#BarChart').style('height'));
-    const bwidth = parseInt(d3.select('#BarChart').style('width'));
-    
     // Appending svg 
     const bsvg = div.append("svg")
                     .attr("width", bwidth)
                     .attr("height", bheight);
 
-    // Setting x axis
-    var x = d3.scaleLinear()
-                .range([0, bwidth])
-                .domain([0, d3.max(data, function (d) {
-                    return d[1]['FDIndex'];
-                })]);
-    
-    // Setting y axis
-    var y = d3.scaleBand()
-                .rangeRound([0, bheight - 10])
-                .domain(data.map(function (d) {
-                    return d[1].Name;
-                }))
-                .padding(0.1);
+    // Set x domain
+    bx.domain([0, d3.max(data, function (d) {
+        return d[1]['FDIndex'];
+    })]);
+
+    // Set y domain
+    by.domain(data.map(function (d) {
+        return d[1].Name;
+    }))
+    .padding(0.1);
 
     // append the rectangles for the bar chart
     const bars = bsvg.selectAll(".bar")
                     .data(data)
-                    .enter()
-                    .append("rect");
+                    .join("rect")
+                    .attr("y", function(d) { return by(d[1].Name) + 10; })
+                    .attr("height", by.bandwidth())
+                    .attr("fill", "red")
+                    .attr("x", d => bwidth - bx(0))
+                    .attr("width", d => bx(0))
 
-    // Setting the attributes and mouse events of the bars
-    bars.attr("y", function(d) { return y(d[1].Name) + 10; })
-        .attr("height", y.bandwidth())
-        .attr("x", 0)
-        .attr("width", function(d) { return x(d[1]['FDIndex']); })
-        .attr("fill", "red")
-        .on('mouseover', function() {
+    // Select rectangles in SVG
+    bsvg.selectAll("rect")
+        .transition()
+        .duration(2000)
+        .ease(d3.easeLinear)
+        .attr("x",0)
+        .attr("width", function(d) { return bwidth - bx(d[1]['FDIndex']); })
+    
+    // Events on bar interaction
+    bars.on('mouseover', function() {
             d3.select(this)
                 .attr('fill', 'orange');
         })
@@ -83,8 +93,8 @@ function barChart(data) {
                     .enter()
                     .append("text");   
 
-    labels.attr("x", function(d) { return x(d[1]['FDIndex']) - 5; })
-            .attr("y", function(d) {return y(d[1].Name) + 27;})
+    labels.attr("x", function(d) { return bwidth - bx(d[1]['FDIndex']) - 10; })
+            .attr("y", function(d) {return by(d[1].Name) + 29;})
             .text(function(d) {return d[1].Name + " " + d[1]['FDIndex']})
             .attr("fill", "white")
             .attr("text-anchor","end")
