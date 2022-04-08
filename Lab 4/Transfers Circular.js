@@ -100,6 +100,8 @@ function transferCircle(data) {
                                             .radius(function(d){ 
                                                 return (size(d.Count)+3) })
                                             .iterations(1)) // Force that avoids circle overlapping
+                        .force("forceX", d3.forceX().strength(.15).x(twidth * 2))
+                        .force("forceY", d3.forceY().strength(.15).y(theight * 2));
                 
      // Apply these forces to the nodes and update their positions.
     // Once the force algorithm is happy with positions ('alpha' value is low enough), simulations will stop.

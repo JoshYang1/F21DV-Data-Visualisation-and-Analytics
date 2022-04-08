@@ -128,7 +128,7 @@ function scatterPlot(data) {
                     return(i*3)
                 })
         .duration(2000)
-        .attr("r", 2.5)
+        .attr("r", 2.8)
         .style("opacity", 0.8);
     
     // Calling the dot events function
@@ -231,7 +231,7 @@ function dotEvents() {
         // Display information on the hovered data point
         tooltip.html("Player: " + d.name + "<br>"  + yKey + ": " + d[yKey] + "<br>" + xKey +": " + d[xKey] )
                 .style("left", (event.x) + "px")
-                .style("top", (event.y) + "px")
+                .style("top", (event.y - 180) + "px")
                 .style("background", colorScale(d.position));
         })
         .on("mouseout", function(d) {

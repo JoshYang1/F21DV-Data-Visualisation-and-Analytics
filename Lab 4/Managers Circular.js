@@ -78,12 +78,14 @@ function managerCircle(data) {
                                             .x(cwidth / 2)
                                             .y(cheight / 2)) // Attraction to the center of the svg area
                         .force("charge", d3.forceManyBody()
-                                            .strength(.1)) // Nodes are attracted one each other of value is > 0
+                                            .strength(.2)) // Nodes are attracted one each other of value is > 0
                         .force("collide", d3.forceCollide()
                                             .strength(.2)
                                             .radius(function(d){ 
                                                 return (size(d.Count)+3) })
                                             .iterations(1)) // Force that avoids circle overlapping
+                        .force("forceX", d3.forceX().strength(.05).x(cwidth * 2))
+                        .force("forceY", d3.forceY().strength(.05).y(cheight * 2));
                 
     // Apply these forces to the nodes and update their positions.
     // Once the force algorithm is happy with positions ('alpha' value is low enough), simulations will stop.
